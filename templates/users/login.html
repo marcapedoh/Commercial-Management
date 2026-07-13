@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connexion - Razor</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-[#0d1117]">
+
+    <div class="min-h-screen p-4">
+        <div class="border-4 rounded-2xl overflow-hidden" style="border-color:#1ecb8b;">
+
+            <!-- NAVBAR -->
+            <nav class="flex items-center justify-between px-10 py-5 bg-[#0f1115]">
+                <div class="text-white text-xl font-bold">Razor</div>
+
+                <div class="hidden md:flex items-center gap-8 text-sm text-gray-300">
+                    <a href="#" class="hover:text-white transition">Product</a>
+                    <a href="#" class="hover:text-white transition">Resources</a>
+                    <a href="#" class="hover:text-white transition">Support</a>
+                    <a href="#" class="hover:text-white transition">Pricing</a>
+                    <a href="#" class="hover:text-white transition">Blog</a>
+                </div>
+
+                <div class="flex items-center gap-6 text-sm">
+                    <a href="#" class="text-gray-300 hover:text-white transition">Sign in</a>
+                    <a href="#"
+                        class="text-[#1ecb8b] font-medium border-b border-[#1ecb8b] hover:opacity-80 transition">Request
+                        Demo</a>
+                </div>
+            </nav>
+
+            <!-- CONTENU -->
+            <div class="bg-[#0f1115] px-6 py-16">
+
+                <div class="text-xs text-[#1ecb8b] px-6 mb-8">Sales@Razor.co.uk</div>
+
+                <div class="text-center mb-14">
+                    <h1 class="text-4xl font-bold text-white mb-4">Login to Your Account</h1>
+                    <p class="text-gray-400 max-w-xl mx-auto">
+                        Choose from 130,000 online video courses with new additions published every second month
+                    </p>
+                </div>
+
+                <div class="max-w-4xl mx-auto grid md:grid-cols-2 gap-10 items-start">
+
+                    <!-- FORMULAIRE DJANGO -->
+                    <div>
+                        <form method="post" action="#" class="space-y-4">
+                            {% csrf_token %}
+
+                            {% if form.errors %}
+                            <div class="text-red-400 text-sm mb-2">
+                                Identifiants invalides. Veuillez réessayer.
+                            </div>
+                            {% endif %}
+
+                            <div class="relative">
+                                <input type="text" name="username" placeholder="Brand / Influencer"
+                                    class="w-full bg-[#1a1d23] border border-gray-700 rounded-lg px-4 py-3 text-gray-300 placeholder-gray-500 focus:outline-none focus:border-[#1ecb8b] transition">
+                                <span
+                                    class="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 rounded-full border border-gray-600"></span>
+                            </div>
+
+                            <input type="password" name="password" placeholder="8 Digit Pin" maxlength="8"
+                                class="w-full bg-[#1a1d23] border border-gray-700 rounded-lg px-4 py-3 text-gray-300 placeholder-gray-500 focus:outline-none focus:border-[#1ecb8b] transition">
+
+                            <button type="submit"
+                                class="w-full flex items-center justify-between bg-gradient-to-r from-[#1ecb8b] to-[#f2c94c] text-[#0f1115] font-semibold rounded-lg px-5 py-3 hover:opacity-90 transition">
+                                <span>Login to Your Account</span>
+                                <span>&rarr;</span>
+                            </button>
+                        </form>
+
+                        <div class="text-center mt-6">
+                            <a href="#" class="text-sm text-gray-300 underline hover:text-white transition">
+                                Forgot Password?
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- SEPARATEUR + SSO -->
+                    <div class="relative">
+                        <span class="hidden md:block absolute -left-6 top-1/2 -translate-y-1/2 text-gray-600">/</span>
+
+                        <div class="space-y-4">
+                            <a href="#"
+                                class="flex items-center gap-3 bg-[#1a1d23] border border-[#1ecb8b] rounded-lg px-5 py-3 text-gray-200 hover:bg-[#1f232b] transition">
+                                <img src="#" alt="Google" class="w-5 h-5">
+                                <span>Sign in with Google</span>
+                            </a>
+
+                            <a href="#"
+                                class="flex items-center gap-3 bg-[#1a1d23] border border-[#1ecb8b] rounded-lg px-5 py-3 text-gray-200 hover:bg-[#1f232b] transition">
+                                <img src="#" alt="Facebook" class="w-5 h-5">
+                                <span>Sign in with Facebook</span>
+                            </a>
+
+                            <a href="#"
+                                class="flex items-center gap-3 bg-[#1a1d23] border border-gray-700 rounded-lg px-5 py-3 text-gray-200 hover:bg-[#1f232b] transition">
+                                <img src="#" alt="Apple" class="w-5 h-5">
+                                <span>Sign in with Apple Account</span>
+                            </a>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- FOOTER -->
+                <div class="flex items-center justify-between mt-20 px-6 text-xs text-gray-500">
+                    <a href="#" class="hover:text-gray-300 transition">Privacy Policy</a>
+                    <span>Copyright@Razor 2022</span>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>
