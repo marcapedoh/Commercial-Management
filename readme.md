@@ -231,43 +231,212 @@ DATABASES = {
 *(penser à ajouter `.env` dans `.gitignore`)*
 
 ### Phase 11 — Création des modèles (Models)
-Rédaction de `models.py` pour chaque application (`users`, `produits`, `clients`, `fournisseurs`, `achats`, `ventes`, `stocks`, `factures`, `reglements`), conformément au cahier des charges fourni.
 
-### Phase 12 — Résolution de l'erreur de migration sur `users`
-```bash
-mkdir apps\users\migrations
-type nul > apps\users\migrations\__init__.py
-```
-Réorganisation de `INSTALLED_APPS` avec `apps.users` en première position, puis :
-```bash
-python manage.py makemigrations users
-```
-Repartir sur une base propre (le projet venant de démarrer) :
-```sql
-DROP DATABASE gestion_commerciale_db;
-CREATE DATABASE gestion_commerciale_db;
-```
-```bash
-python manage.py makemigrations
-python manage.py migrate
+Rédaction de `models.py` pour chaque application, en copiant-collant le code de chaque modèle dans le fichier correspondant de l'application. Le principe est le même pour toutes les applications : ouvrir le fichier `models.py` de l'application concernée et y coller le code du modèle métier associé.
+
+Exemple détaillé pour l'application `users` :
+
+**Chemin du fichier :** `gestion_commercial/apps/users/models.py`
+
+```python
+from django.db import models
+from django.contrib.auth.models import AbstractUser
+
+# Create your models here.
+class User(AbstractUser):
+
+    ROLE_CHOICES = (
+        ("ADMIN", "Administrateur"),
+        ("COMMERCIAL", "Commercial"),
+        ("CAISSIER", "Caissier"),
+        ("GESTIONNAIRE", "Gestionnaire Stock"),
+    )
+
+    nom = models.CharField(
+        max_length=20,
+        blank=True
+    )
+
+    prenom = models.CharField(
+        max_length=30,
+        blank=True
+    )
+
+    telephone = models.CharField(
+        max_length=20,
+        blank=True
+    )
+
+    role = models.CharField(
+        max_length=30,
+        choices=ROLE_CHOICES,
+        default="COMMERCIAL"
+    )
+
+    created_at = models.DateTimeField(
+        auto_now_add=True
+    )
 ```
 
-### Phase 13 — Création du premier compte administrateur
-```bash
-python manage.py createsuperuser
+Ce même principe (copier le code du modèle dans le fichier `models.py` de l'application correspondante) est répété pour toutes les autres applications, chacune dans son propre chemin :
+- `apps/produits/models.py`
+- `apps/clients/models.py`
+- `apps/fournisseurs/models.py`
+- `apps/achats/models.py`
+- `apps/ventes/models.py`
+- `apps/stocks/models.py`
+- `apps/factures/models.py`
+- `apps/reglements/models.py`
+
+Une fois le code de chaque modèle en place dans son application respective, on peut passer à la mise en place de l'authentification.
+
+### Phase 12 — Mise en place de l'authentification (module `users`)
+
+Cette phase regroupe la configuration de l'admin Django, des vues et des URLs de connexion/déconnexion, avant de créer le premier utilisateur et de tester la connexion.
+
+**1) Enregistrement du Custom User dans l'admin**
+
+**Chemin du fichier :** `gestion_commercial/apps/users/admin.py`
+
+```python
+from django.contrib import admin
+from django.contrib.auth.admin import UserAdmin
+from .models import User
+from .forms import CustomUserCreationForm
+
+# Register your models here.
+@admin.register(User)
+class CustomUserAdmin(UserAdmin):
+
+    add_form = CustomUserCreationForm
+
+    fieldsets = UserAdmin.fieldsets + (
+        (
+            "Informations supplémentaires",
+            {
+                "fields": (
+                    "nom",
+                    "prenom",
+                    "telephone",
+                    "role",
+                )
+            }
+        ),
+    )
+
+    add_fieldsets = (
+        (
+            None,
+            {
+                "classes": (
+                    "wide",
+                ),
+                "fields": (
+                    "username",
+                    "password1",
+                    "password2",
+                    "first_name",
+                    "last_name",
+                    "email",
+                    "telephone",
+                    "role",
+                ),
+            },
+        ),
+    )
+
+    list_display = (
+        "nom",
+        "prenom",
+        "username",
+        "email",
+        "role",
+        "is_staff",
+        "is_active",
+    )
 ```
 
-### Phase 14 — Mise en place des templates du module `users`
-```bash
-mkdir templates\users
-type nul > templates\users\login.html
+> ⚠️ Ce fichier importe `CustomUserCreationForm` depuis `apps/users/forms.py`. Ce formulaire doit exister dans `forms.py` (basé sur `UserCreationForm`, avec le modèle `User` et les champs métier `nom`, `prenom`, `telephone`, `role`) pour que l'import fonctionne sans erreur.
+
+**2) Définition des routes d'authentification**
+
+**Chemin du fichier :** `gestion_commercial/apps/users/urls.py`
+
+```python
+from django.urls import path
+from . import views
+
+app_name = 'users'
+
+urlpatterns = [
+    path('', views.login_view, name='login'),
+    path('dashboard/', views.dashboard_view, name='dashboard'),
+    # path('logout/', views.logout_view, name='logout'),
+]
 ```
 
-### Phase 15 — Formulaires, vues et URLs du module `users`
-- Création de `apps/users/forms.py` (`UserCreationFormCustom`, `UserUpdateForm`).
-- Création de `apps/users/urls.py` (routes nommées sous le namespace `users`).
-- Rédaction des vues dans `apps/users/views.py` (`LoginViewCustom`, `LogoutViewCustom`, `UserListView`, `UserCreateView`, `UserUpdateView`, `UserDeleteView`).
-- Inclusion des routes dans `config/urls.py` :
+**3) Écriture des vues de connexion / déconnexion / tableau de bord**
+
+**Chemin du fichier :** `gestion_commercial/apps/users/views.py`
+
+```python
+from django.shortcuts import redirect, render
+
+# Create your views here.
+from django.contrib.auth import authenticate, login, logout
+from django.contrib import messages
+from django.urls import reverse
+from django.contrib.auth.decorators import login_required
+
+def login_view(request):
+
+    if request.user.is_authenticated:
+        return render(request, "users/login.html", {
+            "redirect_url": reverse("users:dashboard")
+        })
+
+    if request.method == "POST":
+        username = request.POST.get("username")
+        password = request.POST.get("password")
+
+        user = authenticate(request, username=username, password=password)
+
+        if user:
+            login(request, user)
+
+            messages.success(
+                request,
+                f"Bienvenue {user.username} 👋"
+            )
+
+            return render(
+                request,
+                "users/login.html",
+                {
+                    "redirect_url": reverse("users:dashboard")
+                }
+            )
+
+        messages.error(
+            request,
+            "Identifiants invalides."
+        )
+
+    return render(request, "users/login.html")
+
+def logout_view(request):
+    logout(request)
+    return redirect('users:login')
+
+@login_required
+def dashboard_view(request):
+    return render(request, 'index.html')
+```
+
+**4) Inclusion des routes `users` dans le projet principal**
+
+**Chemin du fichier :** `gestion_commercial/config/urls.py`
+
 ```python
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -275,11 +444,63 @@ urlpatterns = [
 ]
 ```
 
+### Phase 13 — Génération des migrations pour toutes les applications
+
+Une fois le code des modèles en place dans chaque application, génération des migrations pour l'ensemble du projet :
+
+```bash
+python manage.py makemigrations
+python manage.py migrate
+```
+
+*(cette commande globale génère et applique les migrations de toutes les applications listées dans `INSTALLED_APPS` : `users`, `produits`, `clients`, `fournisseurs`, `achats`, `ventes`, `stocks`, `factures`, `reglements`)*
+
+### Phase 14 — Création du superutilisateur
+
+```bash
+python manage.py createsuperuser
+```
+
+Renseigner :
+```
+Username: admin
+Email address: admin@example.com
+Password: ********
+Password (again): ********
+```
+
+Ce compte permet de :
+- se connecter à l'interface d'administration Django (`/admin/`) ;
+- vérifier que le Custom User et ses champs métier (`nom`, `prenom`, `telephone`, `role`) apparaissent correctement grâce à `CustomUserAdmin` ;
+- disposer d'un premier utilisateur pour tester la page de connexion côté front.
+
+### Phase 15 — Mise en place des templates (page de connexion et page d'accueil)
+
+Création de l'arborescence des templates :
+
+```bash
+mkdir templates\users
+type nul > templates\users\login.html
+type nul > templates\index.html
+```
+
+Arborescence obtenue :
+
+```
+templates/
+├── index.html            # Page d'accueil / dashboard, affichée après connexion
+└── users/
+    └── login.html         # Page de connexion (formulaire username/password)
+```
+
+- **`templates/users/login.html`** : contient le formulaire de connexion (`username`, `password`) qui poste vers `users:login`. C'est la vue `login_view` qui traite la soumission, authentifie l'utilisateur avec `authenticate()`/`login()`, puis renvoie vers `redirect_url` (`users:dashboard`).
+- **`templates/index.html`** : page d'accueil affichée par `dashboard_view`, protégée par `@login_required` (un utilisateur non connecté est automatiquement redirigé vers la page de connexion).
+
 ### Vérification à ce stade
 ```bash
 python manage.py runserver
 ```
-Puis ouverture de `http://127.0.0.1:8000/users/login/`.
+Puis ouverture de `http://127.0.0.1:8000/users/` pour accéder à la page de connexion, saisie des identifiants du superutilisateur créé en Phase 14, et vérification de la redirection vers la page d'accueil (`index.html`) une fois connecté.
 
 ## Étapes réalisées jusqu'à présent
 
@@ -336,6 +557,19 @@ apps/users/
 
 **URLs (`urls.py`)** — routes nommées sous le namespace `users` (`users:login`, `users:list`, `users:create`, `users:update`, `users:delete`), incluses dans `config/urls.py` via `include("apps.users.urls")`.
 
+### 5. Copie des modèles dans chaque application
+
+Le code de chaque modèle métier a été copié dans le fichier `models.py` de l'application correspondante (`apps/<nom_application>/models.py`), en suivant systématiquement le même chemin d'arborescence pour chaque application (`users`, `produits`, `clients`, `fournisseurs`, `achats`, `ventes`, `stocks`, `factures`, `reglements`).
+
+### 6. Authentification fonctionnelle (module `users`)
+
+- Enregistrement du Custom User dans `apps/users/admin.py` via `CustomUserAdmin`, avec affichage des champs métier (`nom`, `prenom`, `telephone`, `role`) dans l'interface d'admin.
+- Vues de connexion/déconnexion/dashboard dans `apps/users/views.py` (`login_view`, `logout_view`, `dashboard_view` protégée par `@login_required`).
+- Routes dédiées dans `apps/users/urls.py`, incluses dans `config/urls.py`.
+- Génération des migrations pour toutes les applications (`makemigrations` / `migrate`).
+- Création du superutilisateur (`createsuperuser`).
+- Mise en place des templates `templates/users/login.html` (formulaire de connexion) et `templates/index.html` (page d'accueil affichée après connexion réussie).
+
 ## Stratégie retenue pour la suite du développement
 
 Ordre de développement des modules restants, chaque étape s'appuyant sur la précédente :
@@ -357,6 +591,7 @@ Ordre de développement des modules restants, chaque étape s'appuyant sur la pr
 ## État actuel
 ✅ Structure du projet et des applications
 ✅ Base de données PostgreSQL fonctionnelle avec Custom User
-✅ Modèles de données complets
+✅ Modèles de données complets, copiés dans chaque application
 ✅ Module `users` : formulaires, vues CRUD et routes en place
-🔄 Prochaine étape : templates du module `users`, puis démarrage du module `produits`
+✅ Authentification fonctionnelle : admin, connexion/déconnexion, superutilisateur, templates `login.html` et `index.html`
+🔄 Prochaine étape : enrichissement des templates (styles, gestion des messages), puis démarrage du module `produits`

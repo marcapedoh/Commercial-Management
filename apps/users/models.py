@@ -9,11 +9,22 @@ class User(AbstractUser):
         ("CAISSIER", "Caissier"),
         ("GESTIONNAIRE", "Gestionnaire Stock"),
     )
+    nom = models.CharField(
+        max_length=20,
+        blank=True
+    )
+    prenom = models.CharField(
+        max_length=30,
+        blank=True
+    )
+
+    
 
     telephone = models.CharField(
         max_length=20,
         blank=True
     )
+
 
     role = models.CharField(
         max_length=30,
