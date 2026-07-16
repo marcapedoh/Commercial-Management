@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block title %}Produits{% endblock %}
+
+{% block content %}
+<div class="flex items-center justify-between mb-6">
+    <h1 class="text-2xl font-semibold">Produits</h1>
+    <a href="{% url 'produits:creer_produit' %}"
+       class="bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition">
+        + Nouveau produit
+    </a>
+</div>
+
+<!-- Recherche -->
+<form method="get" class="flex gap-3 mb-6">
+    <input type="text" name="q" value="{{ q }}" placeholder="Rechercher par référence ou désignation..."
+           class="border rounded-lg px-3 py-2 flex-1">
+    <select name="categorie" class="border rounded-lg px-3 py-2">
+        <option value="">Toutes les catégories</option>
+        {% for cat in categories %}
+            <option value="{{ cat.id }}" {% if categorie_id == cat.id|stringformat:"s" %}selected{% endif %}>
+                {{ cat.nom }}
+            </option>
+        {% endfor %}
+    </select>
+    <button type="submit" class="bg-neutral-800 text-white px-4 py-2 rounded-lg text-sm">Rechercher</button>
+</form>
+
+<div class="bg-white rounded-xl shadow-sm overflow-hidden">
+    <table class="w-full text-sm">
+        <thead class="bg-neutral-50 text-neutral-500 text-left">
+            <tr>
+                <th class="px-4 py-3">Référence</th>
+                <th class="px-4 py-3">Désignation</th>
+                <th class="px-4 py-3">Catégorie</th>
+                <th class="px-4 py-3">Prix achat</th>
+                <th class="px-4 py-3">Prix vente</th>
+                <th class="px-4 py-3">Stock</th>
+                <th class="px-4 py-3"></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for produit in produits %}
+            <tr class="border-t border-neutral-100 hover:bg-neutral-50">
+                <td class="px-4 py-3 font-medium">{{ produit.reference }}</td>
+                <td class="px-4 py-3">{{ produit.designation }}</td>
+                <td class="px-4 py-3">{{ produit.categorie.nom }}</td>
+                <td class="px-4 py-3">{{ produit.prix_achat }} FCFA</td>
+                <td class="px-4 py-3">{{ produit.prix_vente }} FCFA</td>
+                <td class="px-4 py-3">
+                    {% if produit.stock_actuel <= produit.seuil_alerte %}
+                        <span class="text-red-600 font-medium">{{ produit.stock_actuel }} ⚠️</span>
+                    {% else %}
+                        {{ produit.stock_actuel }}
+                    {% endif %}
+                </td>
+                <td class="px-4 py-3 text-right space-x-2 whitespace-nowrap">
+                    <a href="{% url 'produits:modifier_produit' produit.pk %}" class="text-blue-600 hover:underline">Modifier</a>
+                    <a href="{% url 'produits:supprimer_produit' produit.pk %}" class="text-red-600 hover:underline">Supprimer</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="7" class="px-4 py-6 text-center text-neutral-400">Aucun produit trouvé.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

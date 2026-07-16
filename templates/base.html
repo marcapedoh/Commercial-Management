@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}GestFin{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: { extend: { fontFamily: { sans: ['Poppins', 'sans-serif'] } } }
+        }
+    </script>
+</head>
+
+<body class="font-sans min-h-screen bg-[#faf7f2] text-neutral-800">
+
+    <div class="flex">
+
+        <!-- SIDEBAR -->
+        <aside class="hidden lg:flex flex-col w-56 min-h-screen py-6 px-4 bg-white border-r border-neutral-200">
+            <div class="flex items-center gap-2 mb-8 px-2">
+                <div class="w-9 h-9 rounded-full flex items-center justify-center font-bold text-white
+                            bg-gradient-to-br from-amber-400 to-yellow-500">G</div>
+                <span class="font-semibold text-lg">GestFin</span>
+            </div>
+
+            <nav class="flex flex-col gap-1 text-sm">
+                <a href="{% url 'users:dashboard' %}"
+                   class="px-3 py-2 rounded-lg hover:bg-amber-50 transition">🏠 Tableau de bord</a>
+
+                <p class="text-xs uppercase text-neutral-400 mt-4 mb-1 px-3">Catalogue</p>
+                <a href="{% url 'produits:liste_produits' %}"
+                   class="px-3 py-2 rounded-lg hover:bg-amber-50 transition">📦 Produits</a>
+                <a href="{% url 'produits:liste_categories' %}"
+                   class="px-3 py-2 rounded-lg hover:bg-amber-50 transition">🏷️ Catégories</a>
+
+                <p class="text-xs uppercase text-neutral-400 mt-4 mb-1 px-3">Tiers</p>
+                <a href="#" class="px-3 py-2 rounded-lg hover:bg-amber-50 transition text-neutral-400">👤 Clients</a>
+                <a href="#" class="px-3 py-2 rounded-lg hover:bg-amber-50 transition text-neutral-400">🚚 Fournisseurs</a>
+
+                <p class="text-xs uppercase text-neutral-400 mt-4 mb-1 px-3">Transactions</p>
+                <a href="#" class="px-3 py-2 rounded-lg hover:bg-amber-50 transition text-neutral-400">🛒 Achats</a>
+                <a href="#" class="px-3 py-2 rounded-lg hover:bg-amber-50 transition text-neutral-400">💰 Ventes</a>
+            </nav>
+
+            <form method="post" action="{% url 'users:logout' %}" class="mt-auto px-2">
+                {% csrf_token %}
+                <button type="submit" class="text-sm text-neutral-400 hover:text-neutral-700 transition">
+                    ⏻ Déconnexion
+                </button>
+            </form>
+        </aside>
+
+        <!-- CONTENU -->
+        <main class="flex-1 p-6 lg:p-10">
+
+            {% if messages %}
+                <div class="mb-4 space-y-2">
+                    {% for message in messages %}
+                        <div class="px-4 py-3 rounded-lg text-sm
+                            {% if message.tags == 'success' %} bg-emerald-100 text-emerald-800
+                            {% elif message.tags == 'error' %} bg-red-100 text-red-800
+                            {% else %} bg-amber-100 text-amber-800 {% endif %}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            {% block content %}{% endblock %}
+        </main>
+    </div>
+</body>
+</html>

@@ -1,0 +1,148 @@
+{% extends "base.html" %}
+
+{% block title %}{{ titre }}{% endblock %}
+
+{% block content %}
+
+<div class="max-w-6xl mx-auto">
+
+    <!-- En-tête -->
+    <div class="flex items-center justify-between mb-8">
+        <div>
+            <h1 class="text-3xl font-bold text-neutral-800">
+                {{ titre }}
+            </h1>
+            <p class="text-neutral-500 mt-1">
+                Renseignez les informations du produit.
+            </p>
+        </div>
+
+        <a href="{% url 'produits:liste_produits' %}"
+           class="px-4 py-2 rounded-lg border border-neutral-300 hover:bg-neutral-100 transition">
+            ← Retour
+        </a>
+    </div>
+
+    <div class="bg-white rounded-xl shadow-sm border border-neutral-200 p-8">
+
+        <form method="post">
+
+            {% csrf_token %}
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                <div>
+                    <label class="block text-sm font-medium mb-2">
+                        {{ form.reference.label }}
+                    </label>
+                    {{ form.reference }}
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium mb-2">
+                        {{ form.designation.label }}
+                    </label>
+                    {{ form.designation }}
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium mb-2">
+                        {{ form.categorie.label }}
+                    </label>
+                    {{ form.categorie }}
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium mb-2">
+                        {{ form.prix_achat.label }}
+                    </label>
+                    {{ form.prix_achat }}
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium mb-2">
+                        {{ form.prix_vente.label }}
+                    </label>
+                    {{ form.prix_vente }}
+                </div>
+                {% if not form.instance.pk %}
+                <div>
+                    <label class="block text-sm font-medium mb-2">
+                        Stock initial
+                    </label>
+                    {{ form.stock_actuel }}
+                </div>
+                {% endif %}
+
+                <div>
+                    <label class="block text-sm font-medium mb-2">
+                        {{ form.seuil_alerte.label }}
+                    </label>
+                    {{ form.seuil_alerte }}
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium mb-2">
+                        {{ form.stock_securite.label }}
+                    </label>
+                    {{ form.stock_securite }}
+                </div>
+
+
+            </div>
+
+            {% if form.instance.pk %}
+            <div class="mt-8">
+
+                <label class="block text-sm font-medium mb-2">
+                    Stock actuel
+                </label>
+
+                <div class="bg-neutral-100 rounded-lg px-4 py-3 font-semibold text-lg">
+                    {{ form.instance.stock_actuel }} unité{{ form.instance.stock_actuel|pluralize }}
+                </div>
+
+                <p class="text-sm text-neutral-500 mt-2">
+                    Le stock est mis à jour automatiquement par les achats et les ventes.
+                </p>
+
+            </div>
+            {% endif %}
+
+            <div class="mt-8 flex items-center gap-3">
+
+                {{ form.actif }}
+
+                <label for="{{ form.actif.id_for_label }}">
+                    Produit actif
+                </label>
+
+            </div>
+
+            {% if form.non_field_errors %}
+                <div class="mt-6 text-red-600">
+                    {{ form.non_field_errors }}
+                </div>
+            {% endif %}
+
+            <div class="flex justify-end gap-3 mt-10">
+
+                <a href="{% url 'produits:liste_produits' %}"
+                   class="px-5 py-2 rounded-lg border border-neutral-300 hover:bg-neutral-100 transition">
+                    Annuler
+                </a>
+
+                <button type="submit"
+                        class="bg-amber-500 hover:bg-amber-600 text-white px-6 py-2 rounded-lg font-medium transition">
+                    💾 Enregistrer
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}
