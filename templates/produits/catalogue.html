@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+{% load static %}
+{% block styles %}
+<link rel="stylesheet" href="{% static 'css/produit.css' %}">
+{% endblock %}
+{% block content %}
+<main class="px-6 sm:px-8 py-6 space-y-6">
+
+    <div>
+        <h1 class="text-2xl font-semibold text-neutral-800 dark:text-white">Catalogue produits</h1>
+        <p class="text-sm text-neutral-500 dark:text-gray-400">Parcourez, recherchez et gérez l'ensemble de vos produits.</p>
+    </div>
+
+    <!-- STATS RAPIDES -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="rounded-2xl p-5 border bg-white/70 border-amber-200/60 backdrop-blur-xl
+                    dark:bg-[#161b24] dark:border-white/5">
+            <p class="text-xs text-neutral-500 dark:text-gray-400 mb-2">Produits au catalogue</p>
+            <p id="stat-total" class="text-2xl font-semibold text-neutral-800 dark:text-white">--</p>
+        </div>
+        <div class="rounded-2xl p-5 text-white bg-gradient-to-br from-amber-400 to-orange-500 dark:from-[#1ecb8b] dark:to-[#0f6e4f]">
+            <p class="text-xs opacity-90 mb-2">Produits actifs</p>
+            <p id="stat-active" class="text-2xl font-semibold">--</p>
+        </div>
+        <div class="rounded-2xl p-5 border bg-white/70 border-amber-200/60 backdrop-blur-xl
+                    dark:bg-[#161b24] dark:border-white/5">
+            <p class="text-xs text-neutral-500 dark:text-gray-400 mb-2">Prix moyen de vente</p>
+            <p id="stat-avg-price" class="text-2xl font-semibold text-neutral-800 dark:text-white">--</p>
+            <p class="text-xs text-neutral-400 dark:text-gray-500 mt-1">FCFA</p>
+        </div>
+        <div class="rounded-2xl p-5 border bg-white/70 border-amber-200/60 backdrop-blur-xl
+                    dark:bg-[#161b24] dark:border-white/5">
+            <p class="text-xs text-neutral-500 dark:text-gray-400 mb-2">Catégories</p>
+            <p id="stat-categories" class="text-2xl font-semibold text-amber-600 dark:text-[#f2c94c]">--</p>
+        </div>
+    </div>
+
+    <!-- CONTENEUR PRINCIPAL : VUE CATALOGUE / LOADER / FORMULAIRE -->
+    <div class="rounded-2xl p-6 border transition-colors relative overflow-hidden min-h-[520px]
+                bg-white/70 border-amber-200/60 backdrop-blur-xl
+                dark:bg-[#161b24] dark:border-white/5">
+
+        <!-- VUE CATALOGUE -->
+        <div id="view-catalog" class="fade-in">
+
+            <div class="flex items-center justify-between mb-5 gap-3 flex-wrap">
+                <p class="text-sm font-semibold text-neutral-800 dark:text-white">Produits</p>
+
+                <div class="flex items-center gap-2 flex-wrap">
+                    <div class="flex items-center gap-2 px-3 py-1.5 rounded-full text-xs border
+                                border-amber-200 text-neutral-500 dark:border-white/10 dark:text-gray-400">
+                        <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" /></svg>
+                        <input id="search-input" type="text" placeholder="Rechercher un produit..."
+                               class="bg-transparent focus:outline-none placeholder-neutral-400 dark:placeholder-gray-500 w-32 sm:w-44">
+                    </div>
+
+                    <div class="flex items-center gap-1 px-3 py-1.5 rounded-full text-xs border
+                                border-amber-200 text-neutral-500 dark:border-white/10 dark:text-gray-400">
+                        Filter
+                        <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v17.25m0 0-3.75-3.75M12 20.25l3.75-3.75M20.25 3H3.75" /></svg>
+                    </div>
+
+                    <button id="btn-toggle-images" type="button"
+                            class="flex items-center gap-2 px-4 py-2 rounded-full text-xs font-medium transition
+                                   border border-amber-200 text-neutral-600 hover:bg-amber-50
+                                   dark:border-white/10 dark:text-gray-300 dark:hover:bg-white/5">
+                        <svg id="icon-eye-on" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                        </svg>
+                        <svg id="icon-eye-off" class="hidden w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0 1 12 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 0 1-4.293 5.774M6.228 6.228 3 3m3.228 3.228 3.65 3.65m7.894 7.894L21 21m-3.228-3.228-3.65-3.65m0 0a3 3 0 1 0-4.243-4.243m4.243 4.243L9.88 9.88" />
+                        </svg>
+                        <span id="toggle-images-label">Afficher les images</span>
+                    </button>
+
+                    <button id="btn-add-produit" type="button"
+                            class="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium text-white transition hover:opacity-90
+                                   bg-gradient-to-r from-amber-400 to-yellow-500 dark:from-[#1ecb8b] dark:to-[#149766] dark:text-[#0d1117]">
+                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>
+                        Ajouter un produit
+                    </button>
+                </div>
+            </div>
+
+            <!-- GRILLE MOSAÏQUE -->
+            <div id="catalog-grid"></div>
+
+            <p id="empty-state" class="hidden text-center text-sm text-neutral-400 dark:text-gray-500 py-10">
+                Aucun produit ne correspond à votre recherche.
+            </p>
+
+            <!-- PAGINATION -->
+            <div class="flex items-center justify-between mt-8 gap-3 flex-wrap">
+                <p id="pagination-info" class="text-xs text-neutral-400 dark:text-gray-500"></p>
+                <div id="pagination" class="flex items-center gap-1.5 flex-wrap"></div>
+            </div>
+        </div>
+
+        <!-- VUE LOADER -->
+        <div id="view-loader" class="hidden absolute inset-0 flex flex-col items-center justify-center gap-4">
+            <div class="relative w-32 h-32 flex items-center justify-center">
+                <div class="orbit absolute inset-0">
+                    <span class="orbit-star" style="top: 0; left: 50%; margin-left: -5px;"></span>
+                    <span class="orbit-star" style="bottom: 8px; left: 8px;"></span>
+                    <span class="orbit-star" style="bottom: 8px; right: 8px;"></span>
+                </div>
+                <svg class="w-24 h-24 -rotate-90" viewBox="0 0 100 100">
+                    <circle cx="50" cy="50" r="42" fill="none" stroke-width="8"
+                            class="stroke-amber-100 dark:stroke-white/5"></circle>
+                    <circle id="loader-circle" cx="50" cy="50" r="42" fill="none" stroke-width="8"
+                            stroke-linecap="round"
+                            class="stroke-amber-500 dark:stroke-[#1ecb8b]"
+                            stroke-dasharray="263.9" stroke-dashoffset="263.9"></circle>
+                </svg>
+                <span id="loader-percent" class="absolute text-lg font-semibold text-neutral-800 dark:text-white">0%</span>
+            </div>
+            <p class="text-sm text-neutral-500 dark:text-gray-400">Préparation du formulaire...</p>
+        </div>
+
+        <!-- VUE FORMULAIRE -->
+        <div id="view-form" class="hidden fade-in">
+            <div class="flex items-center justify-between mb-5">
+                <p class="text-sm font-semibold text-neutral-800 dark:text-white">Ajouter un nouveau produit</p>
+                <button id="btn-cancel-produit" type="button" class="text-xs font-medium text-neutral-400 hover:text-neutral-700 dark:text-gray-500 dark:hover:text-gray-300">
+                    Annuler
+                </button>
+            </div>
+
+            <!-- Zone réservée au formulaire : à compléter -->
+            <div id="produit-form-zone"></div>
+        </div>
+
+    </div>
+</main>
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'js/produit.js' %}"></script>
+{% endblock %}

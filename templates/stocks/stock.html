@@ -1,0 +1,246 @@
+{% extends "base.html" %}
+{% load static %}
+    <style>
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-thumb { background: #d4d4d4; border-radius: 10px; }
+        .dark ::-webkit-scrollbar-thumb { background: #2a3038; }
+
+        .nav-pill.active { background: #171717; color: #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.15); }
+        .dark .nav-pill.active { background: #1ecb8b; color: #0d1117; }
+        .side-icon.active { background: linear-gradient(135deg,#fbbf24,#f59e0b); color: #fff; }
+        .dark .side-icon.active { background: linear-gradient(135deg,#1ecb8b,#149766); color: #0d1117; }
+
+        @keyframes spinOrbit { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        @keyframes fadeSlide { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+        .orbit { animation: spinOrbit 3.5s linear infinite; }
+        .orbit-star {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: #f2c94c;
+            clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+        }
+        .fade-in { animation: fadeSlide 0.4s ease both; }
+    </style>
+
+{% block content %}
+<main class="px-6 sm:px-8 py-6 space-y-6">
+
+                <div>
+                    <h1 class="text-2xl font-semibold text-neutral-800 dark:text-white">Gestion du stock</h1>
+                    <p class="text-sm text-neutral-500 dark:text-gray-400">Suivez vos niveaux de stock, anticipez les ruptures et pilotez la valeur de vos actifs.</p>
+                </div>
+
+                <!-- STATS -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div class="rounded-2xl p-5 border bg-white/70 border-amber-200/60 backdrop-blur-xl
+                                dark:bg-[#161b24] dark:border-white/5">
+                        <p class="text-xs text-neutral-500 dark:text-gray-400 mb-2">Valeur totale du stock</p>
+                        <p id="stat-total-value" class="text-2xl font-semibold text-neutral-800 dark:text-white">--</p>
+                        <p class="text-xs text-neutral-400 dark:text-gray-500 mt-1">FCFA</p>
+                    </div>
+                    <div class="rounded-2xl p-5 text-white bg-gradient-to-br from-rose-500 to-red-500">
+                        <p class="text-xs opacity-90 mb-2">Produits en risque de rupture</p>
+                        <p id="stat-risk" class="text-2xl font-semibold">--</p>
+                        <p class="text-xs opacity-90 mt-1">Sous le stock de sécurité</p>
+                    </div>
+                    <div class="rounded-2xl p-5 border bg-white/70 border-amber-200/60 backdrop-blur-xl
+                                dark:bg-[#161b24] dark:border-white/5">
+                        <p class="text-xs text-neutral-500 dark:text-gray-400 mb-2">Alertes seuil</p>
+                        <p id="stat-alert" class="text-2xl font-semibold text-amber-600 dark:text-[#f2c94c]">--</p>
+                        <p class="text-xs text-neutral-400 dark:text-gray-500 mt-1">Sous le seuil d'alerte</p>
+                    </div>
+                    <div class="rounded-2xl p-5 border bg-white/70 border-amber-200/60 backdrop-blur-xl
+                                dark:bg-[#161b24] dark:border-white/5">
+                        <p class="text-xs text-neutral-500 dark:text-gray-400 mb-2">Références en stock</p>
+                        <p id="stat-count" class="text-2xl font-semibold text-neutral-800 dark:text-white">--</p>
+                        <p class="text-xs text-neutral-400 dark:text-gray-500 mt-1">Produits suivis</p>
+                    </div>
+                </div>
+
+                <!-- BANNIERE ALERTE -->
+                <div id="alert-banner" class="hidden rounded-2xl p-4 border flex items-start gap-3
+                            bg-rose-50 border-rose-200 dark:bg-rose-500/10 dark:border-rose-500/20">
+                    <svg class="w-5 h-5 mt-0.5 text-rose-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
+                    </svg>
+                    <div class="flex-1">
+                        <p class="text-sm font-medium text-rose-700 dark:text-rose-300">Produits en risque de rupture</p>
+                        <p id="alert-list" class="text-xs text-rose-500 dark:text-rose-400 mt-1"></p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+                    <!-- COLONNE PRINCIPALE : LISTE / LOADER / FORMULAIRE -->
+                    <div class="lg:col-span-2">
+                        <div class="rounded-2xl p-6 border transition-colors relative overflow-hidden min-h-[420px]
+                                    bg-white/70 border-amber-200/60 backdrop-blur-xl
+                                    dark:bg-[#161b24] dark:border-white/5">
+
+                            <!-- VUE LISTE -->
+                            <div id="view-list" class="fade-in">
+                                <div class="flex items-center justify-between mb-5 gap-3 flex-wrap">
+                                    <p class="text-sm font-semibold text-neutral-800 dark:text-white">Inventaire</p>
+                                    <button id="btn-add" type="button" class="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium text-white transition hover:opacity-90
+                                                   bg-gradient-to-r from-amber-400 to-yellow-500 dark:from-[#1ecb8b] dark:to-[#149766] dark:text-[#0d1117]">
+                                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>
+                                        Ajouter un stock
+                                    </button>
+                                </div>
+
+                                <div class="overflow-x-auto">
+                                    <table class="w-full text-sm">
+                                        <thead>
+                                            <tr class="text-xs text-neutral-400 dark:text-gray-500">
+                                                <th class="text-left font-medium pb-3">Produit</th>
+                                                <th class="text-left font-medium pb-3">Stock actuel</th>
+                                                <th class="text-left font-medium pb-3">Seuil / Sécurité</th>
+                                                <th class="text-left font-medium pb-3">Statut</th>
+                                                <th class="text-left font-medium pb-3">Rupture estimée</th>
+                                                <th class="text-left font-medium pb-3">Valeur stock</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="stock-tbody" class="divide-y divide-amber-100 dark:divide-white/5"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <!-- VUE LOADER -->
+                            <div id="view-loader" class="hidden absolute inset-0 flex flex-col items-center justify-center gap-4">
+                                <div class="relative w-32 h-32 flex items-center justify-center">
+                                    <div class="orbit absolute inset-0">
+                                        <span class="orbit-star" style="top: 0; left: 50%; margin-left: -5px;"></span>
+                                        <span class="orbit-star" style="bottom: 8px; left: 8px;"></span>
+                                        <span class="orbit-star" style="bottom: 8px; right: 8px;"></span>
+                                    </div>
+                                    <svg class="w-24 h-24 -rotate-90" viewBox="0 0 100 100">
+                                        <circle cx="50" cy="50" r="42" fill="none" stroke-width="8"
+                                                class="stroke-amber-100 dark:stroke-white/5"></circle>
+                                        <circle id="loader-circle" cx="50" cy="50" r="42" fill="none" stroke-width="8"
+                                                stroke-linecap="round"
+                                                class="stroke-amber-500 dark:stroke-[#1ecb8b]"
+                                                stroke-dasharray="263.9" stroke-dashoffset="263.9"></circle>
+                                    </svg>
+                                    <span id="loader-percent" class="absolute text-lg font-semibold text-neutral-800 dark:text-white">0%</span>
+                                </div>
+                                <p class="text-sm text-neutral-500 dark:text-gray-400">Préparation du formulaire...</p>
+                            </div>
+
+                            <!-- VUE FORMULAIRE -->
+                            <div id="view-form" class="hidden fade-in">
+                                <div class="flex items-center justify-between mb-5">
+                                    <p class="text-sm font-semibold text-neutral-800 dark:text-white">Ajouter un nouveau stock</p>
+                                    <button id="btn-cancel" type="button" class="text-xs font-medium text-neutral-400 hover:text-neutral-700 dark:text-gray-500 dark:hover:text-gray-300">
+                                        Annuler
+                                    </button>
+                                </div>
+
+                                <form id="add-stock-form" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    <div class="flex flex-col gap-1.5">
+                                        <label class="text-xs text-neutral-500 dark:text-gray-400">Nom du produit</label>
+                                        <input required id="f-name" type="text" placeholder="Ex. Clavier HP"
+                                            class="rounded-lg px-3 py-2.5 text-sm transition focus:outline-none
+                                                   bg-white/60 border border-amber-200 text-neutral-700 placeholder-neutral-400 focus:border-amber-400
+                                                   dark:bg-[#1a1d23] dark:border-gray-700 dark:text-gray-300 dark:placeholder-gray-500 dark:focus:border-[#1ecb8b]">
+                                    </div>
+                                    <div class="flex flex-col gap-1.5">
+                                        <label class="text-xs text-neutral-500 dark:text-gray-400">Prix d'achat unitaire (FCFA)</label>
+                                        <input required id="f-price" type="number" min="0" placeholder="Ex. 350000"
+                                            class="rounded-lg px-3 py-2.5 text-sm transition focus:outline-none
+                                                   bg-white/60 border border-amber-200 text-neutral-700 placeholder-neutral-400 focus:border-amber-400
+                                                   dark:bg-[#1a1d23] dark:border-gray-700 dark:text-gray-300 dark:placeholder-gray-500 dark:focus:border-[#1ecb8b]">
+                                    </div>
+                                    <div class="flex flex-col gap-1.5">
+                                        <label class="text-xs text-neutral-500 dark:text-gray-400">Stock actuel</label>
+                                        <input required id="f-stock" type="number" min="0" placeholder="Ex. 18"
+                                            class="rounded-lg px-3 py-2.5 text-sm transition focus:outline-none
+                                                   bg-white/60 border border-amber-200 text-neutral-700 placeholder-neutral-400 focus:border-amber-400
+                                                   dark:bg-[#1a1d23] dark:border-gray-700 dark:text-gray-300 dark:placeholder-gray-500 dark:focus:border-[#1ecb8b]">
+                                    </div>
+                                    <div class="flex flex-col gap-1.5">
+                                        <label class="text-xs text-neutral-500 dark:text-gray-400">Ventes moyennes / jour</label>
+                                        <input required id="f-sales" type="number" min="0" step="0.1" placeholder="Ex. 5"
+                                            class="rounded-lg px-3 py-2.5 text-sm transition focus:outline-none
+                                                   bg-white/60 border border-amber-200 text-neutral-700 placeholder-neutral-400 focus:border-amber-400
+                                                   dark:bg-[#1a1d23] dark:border-gray-700 dark:text-gray-300 dark:placeholder-gray-500 dark:focus:border-[#1ecb8b]">
+                                    </div>
+                                    <div class="flex flex-col gap-1.5">
+                                        <label class="text-xs text-neutral-500 dark:text-gray-400">Seuil d'alerte</label>
+                                        <input required id="f-alert" type="number" min="0" placeholder="Ex. 15"
+                                            class="rounded-lg px-3 py-2.5 text-sm transition focus:outline-none
+                                                   bg-white/60 border border-amber-200 text-neutral-700 placeholder-neutral-400 focus:border-amber-400
+                                                   dark:bg-[#1a1d23] dark:border-gray-700 dark:text-gray-300 dark:placeholder-gray-500 dark:focus:border-[#1ecb8b]">
+                                    </div>
+                                    <div class="flex flex-col gap-1.5">
+                                        <label class="text-xs text-neutral-500 dark:text-gray-400">Stock de sécurité</label>
+                                        <input required id="f-security" type="number" min="0" placeholder="Ex. 20"
+                                            class="rounded-lg px-3 py-2.5 text-sm transition focus:outline-none
+                                                   bg-white/60 border border-amber-200 text-neutral-700 placeholder-neutral-400 focus:border-amber-400
+                                                   dark:bg-[#1a1d23] dark:border-gray-700 dark:text-gray-300 dark:placeholder-gray-500 dark:focus:border-[#1ecb8b]">
+                                    </div>
+                                    <div class="flex flex-col gap-1.5 sm:col-span-2">
+                                        <label class="text-xs text-neutral-500 dark:text-gray-400">Stock minimum recommandé</label>
+                                        <input required id="f-min" type="number" min="0" placeholder="Ex. 25"
+                                            class="rounded-lg px-3 py-2.5 text-sm transition focus:outline-none
+                                                   bg-white/60 border border-amber-200 text-neutral-700 placeholder-neutral-400 focus:border-amber-400
+                                                   dark:bg-[#1a1d23] dark:border-gray-700 dark:text-gray-300 dark:placeholder-gray-500 dark:focus:border-[#1ecb8b]">
+                                    </div>
+
+                                    <button type="submit" class="sm:col-span-2 mt-2 flex items-center justify-center gap-2 py-3 rounded-full text-sm font-semibold text-white transition hover:opacity-90
+                                                   bg-gradient-to-r from-amber-400 to-yellow-500 dark:from-[#1ecb8b] dark:to-[#149766] dark:text-[#0d1117]">
+                                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
+                                        Enregistrer le produit
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- COLONNE DROITE : VALORISATION -->
+                    <div class="lg:col-span-1 space-y-6">
+                        <div class="rounded-2xl p-6 border transition-colors
+                                    bg-white/70 border-amber-200/60 backdrop-blur-xl
+                                    dark:bg-[#161b24] dark:border-white/5">
+                            <p class="text-sm font-semibold text-neutral-800 dark:text-white">Top produits immobilisant le plus d'argent</p>
+                            <p class="text-xs text-neutral-400 dark:text-gray-500 mb-4">Valeur = Prix d'achat &times; Quantité restante</p>
+                            <div id="value-chart"></div>
+                        </div>
+
+                        <div class="rounded-2xl p-6 border transition-colors
+                                    bg-white/70 border-amber-200/60 backdrop-blur-xl
+                                    dark:bg-[#161b24] dark:border-white/5">
+                            <p class="text-sm font-medium text-neutral-700 dark:text-gray-300 mb-4">Répartition des statuts</p>
+                            <div class="space-y-3">
+                                <div class="flex items-center justify-between text-sm">
+                                    <span class="flex items-center gap-2 text-neutral-600 dark:text-gray-300">
+                                        <span class="w-2 h-2 rounded-full bg-emerald-500"></span> OK
+                                    </span>
+                                    <span id="count-ok" class="font-medium text-neutral-800 dark:text-white">--</span>
+                                </div>
+                                <div class="flex items-center justify-between text-sm">
+                                    <span class="flex items-center gap-2 text-neutral-600 dark:text-gray-300">
+                                        <span class="w-2 h-2 rounded-full bg-amber-500"></span> Alerte
+                                    </span>
+                                    <span id="count-alert" class="font-medium text-neutral-800 dark:text-white">--</span>
+                                </div>
+                                <div class="flex items-center justify-between text-sm">
+                                    <span class="flex items-center gap-2 text-neutral-600 dark:text-gray-300">
+                                        <span class="w-2 h-2 rounded-full bg-rose-500"></span> Risque de rupture
+                                    </span>
+                                    <span id="count-risk" class="font-medium text-neutral-800 dark:text-white">--</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+{% endblock %}
+
+
+{% block scripts %}
+
+<script src="{% static 'js/stock.js' %}"></script>
+
+{% endblock %}

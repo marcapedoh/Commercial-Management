@@ -1,0 +1,47 @@
+::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-thumb { background: #d4d4d4; border-radius: 10px; }
+        .dark ::-webkit-scrollbar-thumb { background: #2a3038; }
+
+        .nav-pill.active { background: #171717; color: #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.15); }
+        .dark .nav-pill.active { background: #1ecb8b; color: #0d1117; }
+        .side-icon.active { background: linear-gradient(135deg,#fbbf24,#f59e0b); color: #fff; }
+        .dark .side-icon.active { background: linear-gradient(135deg,#1ecb8b,#149766); color: #0d1117; }
+
+        @keyframes spinOrbit { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        @keyframes fadeSlide { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+        .orbit { animation: spinOrbit 3.5s linear infinite; }
+        .orbit-star {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: #f2c94c;
+            clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+        }
+        .fade-in { animation: fadeSlide 0.4s ease both; }
+
+        /* --- Mosaïque (masonry) --- */
+        #catalog-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+            grid-auto-rows: 8px;
+            gap: 1.5rem;
+        }
+        .product-card {
+            align-self: start;
+            display: flex;
+            flex-direction: column;
+        }
+        .product-image-zone { display: none; }
+        .catalog-show-images .product-image-zone { display: block; }
+        .catalog-show-images .product-desc { display: -webkit-box; }
+
+        .product-desc {
+            display: none;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .page-btn.active { background: #171717; color: #fff; }
+        .dark .page-btn.active { background: #1ecb8b; color: #0d1117; }
