@@ -1,24 +1,42 @@
-
-
-# Create your models here.
 from django.db import models
 
-# Create your models here.
+
 class Fournisseur(models.Model):
 
-    raison_sociale=models.CharField(
-        max_length=150
+    nom = models.CharField(
+        max_length=150,
+        unique=True
     )
 
-    telephone=models.CharField(
-        max_length=20
-    )
-
-    email=models.EmailField(
+    email = models.EmailField(
         blank=True
     )
 
-
-    adresse=models.TextField(
+    telephone = models.CharField(
+        max_length=20,
         blank=True
     )
+
+    adresse = models.TextField(
+        blank=True
+    )
+
+    ville = models.CharField(
+        max_length=100,
+        blank=True
+    )
+
+    actif = models.BooleanField(
+        default=True
+    )
+
+    created_at = models.DateTimeField(
+        auto_now_add=True
+    )
+
+    updated_at = models.DateTimeField(
+        auto_now=True
+    )
+
+    def __str__(self):
+        return self.nom

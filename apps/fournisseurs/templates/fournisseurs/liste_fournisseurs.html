@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}Fournisseurs{% endblock %}
+
+{% block content %}
+<div class="flex items-center justify-between mb-6">
+    <h1 class="text-2xl font-semibold">Fournisseurs</h1>
+    <a href="{% url 'fournisseurs:creer_fournisseur' %}"
+       class="bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition">
+        + Nouveau fournisseur
+    </a>
+</div>
+
+<form method="get" class="flex gap-3 mb-6">
+    <input type="text" name="q" value="{{ q }}" placeholder="Rechercher par nom, ville ou email..."
+           class="border rounded-lg px-3 py-2 flex-1">
+    <button type="submit" class="bg-neutral-800 text-white px-4 py-2 rounded-lg text-sm">Rechercher</button>
+</form>
+
+<div class="bg-white rounded-xl shadow-sm overflow-hidden">
+    <table class="w-full text-sm">
+        <thead class="bg-neutral-50 text-neutral-500 text-left">
+            <tr>
+                <th class="px-4 py-3">Nom</th>
+                <th class="px-4 py-3">Ville</th>
+                <th class="px-4 py-3">Téléphone</th>
+                <th class="px-4 py-3">Email</th>
+                <th class="px-4 py-3">Statut</th>
+                <th class="px-4 py-3"></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for f in fournisseurs %}
+            <tr class="border-t border-neutral-100 hover:bg-neutral-50">
+                <td class="px-4 py-3 font-medium">{{ f.nom }}</td>
+                <td class="px-4 py-3">{{ f.ville|default:"—" }}</td>
+                <td class="px-4 py-3">{{ f.telephone|default:"—" }}</td>
+                <td class="px-4 py-3">{{ f.email|default:"—" }}</td>
+                <td class="px-4 py-3">
+                    {% if f.actif %}
+                        <span class="text-emerald-600">Actif</span>
+                    {% else %}
+                        <span class="text-neutral-400">Inactif</span>
+                    {% endif %}
+                </td>
+                <td class="px-4 py-3 text-right space-x-2 whitespace-nowrap">
+                    <a href="{% url 'fournisseurs:historique_fournisseur' f.pk %}" class="text-neutral-600 hover:underline">Historique</a>
+                    <a href="{% url 'fournisseurs:modifier_fournisseur' f.pk %}" class="text-blue-600 hover:underline">Modifier</a>
+                    <a href="{% url 'fournisseurs:supprimer_fournisseur' f.pk %}" class="text-red-600 hover:underline">Supprimer</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="6" class="px-4 py-6 text-center text-neutral-400">Aucun fournisseur.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

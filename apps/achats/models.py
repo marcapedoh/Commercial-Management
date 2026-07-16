@@ -34,6 +34,11 @@ class Achat(models.Model):
         User,
         on_delete=models.PROTECT
     )
+    @property
+    def montant_total(self):
+     return sum(ligne.sous_total for ligne in self.lignes.all())
+    def __str__(self):
+     return self.reference
 
 class LigneAchat(models.Model):
 
@@ -57,3 +62,8 @@ class LigneAchat(models.Model):
         max_digits=12,
         decimal_places=2
     )
+    @property
+    def sous_total(self):
+     return self.quantite * self.prix_unitaire
+    def __str__(self):
+     return f"{self.produit.designation} x {self.quantite}"

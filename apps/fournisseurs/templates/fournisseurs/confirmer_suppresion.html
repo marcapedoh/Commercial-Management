@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Supprimer un fournisseur{% endblock %}
+
+{% block content %}
+<div class="bg-white rounded-xl shadow-sm p-6 max-w-lg">
+    <h1 class="text-xl font-semibold mb-3">Confirmer la suppression</h1>
+    <p class="text-neutral-600 mb-6">
+        Es-tu sûre de vouloir supprimer le fournisseur <strong>{{ fournisseur.nom }}</strong> ?
+        Si des achats sont liés à ce fournisseur, la suppression sera refusée.
+    </p>
+    <form method="post" class="flex gap-3">
+        {% csrf_token %}
+        <button type="submit" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm font-medium">
+            Oui, supprimer
+        </button>
+        <a href="{% url 'fournisseurs:liste_fournisseurs' %}" class="text-neutral-500 px-4 py-2 text-sm">Annuler</a>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}{{ titre }}{% endblock %}
+
+{% block content %}
+<h1 class="text-2xl font-semibold mb-6">{{ titre }}</h1>
+
+<form method="post" class="bg-white rounded-xl shadow-sm p-6 space-y-6">
+    {% csrf_token %}
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl">
+        {% for field in form %}
+            <div>
+                <label class="block text-sm font-medium mb-1">{{ field.label }}</label>
+                {{ field }}
+                {% if field.errors %}
+                    <p class="text-red-600 text-xs mt-1">{{ field.errors.0 }}</p>
+                {% endif %}
+            </div>
+        {% endfor %}
+    </div>
+
+    <div>
+        <p class="text-sm font-medium mb-2">Produits vendus</p>
+
+        {{ formset.management_form }}
+
+        <div class="space-y-2">
+            {% for ligne_form in formset %}
+                <div class="flex gap-2 items-start border-b border-neutral-100 pb-2">
+                    <div class="flex-1">{{ ligne_form.produit }}</div>
+                    <div class="w-24">{{ ligne_form.quantite }}</div>
+                    {% if ligne_form.instance.pk %}
+                        <div class="pt-2">{{ ligne_form.DELETE }}</div>
+                    {% endif %}
+                    {% for hidden in ligne_form.hidden_fields %}{{ hidden }}{% endfor %}
+                </div>
+                {% if ligne_form.errors %}
+                    <p class="text-red-600 text-xs">{{ ligne_form.errors }}</p>
+                {% endif %}
+            {% endfor %}
+        </div>
+        <p class="text-xs text-neutral-400 mt-2">
+            Le prix de vente est repris automatiquement depuis la fiche produit.
+        </p>
+    </div>
+
+    <div class="flex gap-3 pt-2">
+        <button type="submit" class="bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-lg text-sm font-medium">
+            Enregistrer la vente
+        </button>
+        <a href="{% url 'ventes:liste_ventes' %}" class="text-neutral-500 px-4 py-2 text-sm">Annuler</a>
+    </div>
+</form>
+{% endblock %}

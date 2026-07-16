@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}{{ titre }}{% endblock %}
+
+{% block content %}
+<h1 class="text-2xl font-semibold mb-6">{{ titre }}</h1>
+
+<form method="post" class="bg-white rounded-xl shadow-sm p-6 max-w-2xl space-y-4">
+    {% csrf_token %}
+
+    {% for field in form %}
+        <div>
+            <label class="block text-sm font-medium mb-1">{{ field.label }}</label>
+            {{ field }}
+            {% if field.errors %}
+                <p class="text-red-600 text-xs mt-1">{{ field.errors.0 }}</p>
+            {% endif %}
+        </div>
+    {% endfor %}
+
+    <div class="flex gap-3 pt-2">
+        <button type="submit" class="bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-lg text-sm font-medium">
+            Enregistrer
+        </button>
+        <a href="{% url 'clients:liste_clients' %}" class="text-neutral-500 px-4 py-2 text-sm">Annuler</a>
+    </div>
+</form>
+{% endblock %}

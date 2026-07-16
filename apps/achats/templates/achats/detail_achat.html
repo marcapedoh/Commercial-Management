@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Achat {{ achat.reference }}{% endblock %}
+
+{% block content %}
+<div class="flex items-center justify-between mb-6">
+    <h1 class="text-2xl font-semibold">Achat {{ achat.reference }}</h1>
+    <a href="{% url 'achats:liste_achats' %}"
+       class="px-4 py-2 rounded-lg border border-neutral-300 hover:bg-neutral-100 transition text-sm">
+        ← Retour
+    </a>
+</div>
+
+<div class="bg-white rounded-xl shadow-sm p-6 mb-6 max-w-xl">
+    <p><span class="text-neutral-500">Fournisseur :</span> {{ achat.fournisseur.nom }}</p>
+    <p><span class="text-neutral-500">Date :</span> {{ achat.date }}</p>
+    <p><span class="text-neutral-500">Enregistré par :</span> {{ achat.utilisateur }}</p>
+    <p class="font-semibold mt-2">Total : {{ achat.total }} FCFA</p>
+</div>
+
+<div class="bg-white rounded-xl shadow-sm overflow-hidden">
+    <table class="w-full text-sm">
+        <thead class="bg-neutral-50 text-neutral-500 text-left">
+            <tr>
+                <th class="px-4 py-3">Produit</th>
+                <th class="px-4 py-3">Quantité</th>
+                <th class="px-4 py-3">Prix unitaire</th>
+                <th class="px-4 py-3">Sous-total</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for ligne in achat.lignes.all %}
+            <tr class="border-t border-neutral-100">
+                <td class="px-4 py-3">{{ ligne.produit.designation }}</td>
+                <td class="px-4 py-3">{{ ligne.quantite }}</td>
+                <td class="px-4 py-3">{{ ligne.prix_unitaire }} FCFA</td>
+                <td class="px-4 py-3">{{ ligne.sous_total }} FCFA</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
