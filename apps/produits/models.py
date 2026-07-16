@@ -1,19 +1,25 @@
 from django.db import models
-
+import random
+import string
 # Create your models here.
 class Categorie(models.Model):
 
     nom = models.CharField(
-        max_length=100
+        max_length=100,
+        unique=True
     )
 
     description = models.TextField(
-        blank=True
+        blank=True,
+        null=True
     )
 
     created_at=models.DateTimeField(
         auto_now_add=True
     )
+
+    def __str__(self):
+        return self.nom
 
 class Produit(models.Model):
 
@@ -75,8 +81,28 @@ class Produit(models.Model):
         auto_now_add=True
     )
 
+    def generate_reference(self):
+
+        prefix = "PRD"
+
+        code = ''.join(
+            random.choices(
+                string.digits,
+                k=6
+            )
+        )
+
+        return f"{prefix}-{code}"
+
+
+    def save(self, *args, **kwargs):
+
+        if not self.reference:
+            self.reference = self.generate_reference()
+
+        super().save(*args, **kwargs)
+
 
     @property
     def marge_unitaire(self):
-
         return self.prix_vente-self.prix_achat

@@ -8,29 +8,11 @@ document.addEventListener('DOMContentLoaded', () => {
        Champs attendus par produit :
        { id, name, category, price, stock, status, description, image }
     ========================================================= */
-    const PRODUCTS = [
-        { id: 1, name: 'Clavier HP', category: 'Informatique', price: 15000, stock: 32, status: 'active', description: "Clavier filaire ergonomique, compatible USB, idéal pour un usage bureautique quotidien.", image: '' },
-        { id: 2, name: 'Souris Logitech', category: 'Informatique', price: 8500, stock: 54, status: 'active', description: "Souris optique sans fil avec capteur haute précision et autonomie longue durée.", image: '' },
-        { id: 3, name: 'Écran Samsung 24"', category: 'Informatique', price: 95000, stock: 12, status: 'active', description: "Moniteur Full HD 24 pouces, dalle IPS, idéal pour le travail et la création.", image: '' },
-        { id: 4, name: 'Disque dur externe 1To', category: 'Stockage', price: 32000, stock: 20, status: 'active', description: "Disque dur externe USB 3.0, 1 To, compact et robuste pour vos sauvegardes.", image: '' },
-        { id: 5, name: 'Imprimante Canon', category: 'Bureautique', price: 68000, stock: 6, status: 'inactive', description: "Imprimante multifonction jet d'encre, impression, scan et copie couleur.", image: '' },
-        { id: 6, name: 'Chaise de bureau', category: 'Mobilier', price: 45000, stock: 15, status: 'active', description: "Chaise ergonomique réglable en hauteur avec support lombaire renforcé.", image: '' },
-        { id: 7, name: 'Casque audio Sony', category: 'Audio', price: 27000, stock: 40, status: 'active', description: "Casque sans fil réduction de bruit active, autonomie 20h, confort longue durée.", image: '' },
-        { id: 8, name: 'Webcam Logitech HD', category: 'Informatique', price: 21000, stock: 18, status: 'active', description: "Webcam Full HD 1080p avec micro intégré, parfaite pour la visioconférence.", image: '' },
-        { id: 9, name: 'Onduleur 650VA', category: 'Électrique', price: 39000, stock: 9, status: 'active', description: "Onduleur avec régulateur de tension, protège vos équipements des coupures.", image: '' },
-        { id: 10, name: 'Routeur Wifi TP-Link', category: 'Réseau', price: 24500, stock: 25, status: 'active', description: "Routeur double bande Wifi 5, débit rapide et portée étendue pour le bureau.", image: '' },
-        { id: 11, name: 'Table de bureau', category: 'Mobilier', price: 72000, stock: 5, status: 'inactive', description: "Table de bureau en bois massif avec rangement intégré et finition moderne.", image: '' },
-        { id: 12, name: 'Clé USB 64Go', category: 'Stockage', price: 6000, stock: 80, status: 'active', description: "Clé USB 3.0 haute vitesse, compacte et fiable pour le transfert de fichiers.", image: '' },
-        { id: 13, name: 'Batterie externe 20000mAh', category: 'Accessoires', price: 18500, stock: 30, status: 'active', description: "Powerbank haute capacité, charge rapide, deux ports USB simultanés.", image: '' },
-        { id: 14, name: 'Lampe de bureau LED', category: 'Mobilier', price: 12500, stock: 22, status: 'active', description: "Lampe LED à intensité réglable, bras flexible, économe en énergie.", image: '' },
-        { id: 15, name: 'Scanner Epson', category: 'Bureautique', price: 54000, stock: 7, status: 'active', description: "Scanner à plat haute résolution, numérisation rapide de documents A4.", image: '' },
-        { id: 16, name: 'Tapis de souris XL', category: 'Accessoires', price: 4500, stock: 60, status: 'active', description: "Tapis de souris grand format, surface lisse, base antidérapante.", image: '' },
-        { id: 17, name: 'Multiprise 6 prises', category: 'Électrique', price: 9000, stock: 45, status: 'active', description: "Multiprise parafoudre avec interrupteur et câble renforcé de 3 mètres.", image: '' },
-        { id: 18, name: 'Support écran ajustable', category: 'Accessoires', price: 16000, stock: 14, status: 'inactive', description: "Bras support pour moniteur, orientation et hauteur réglables facilement.", image: '' },
-        { id: 19, name: 'Casier de rangement', category: 'Mobilier', price: 38000, stock: 10, status: 'active', description: "Casier métallique 3 tiroirs verrouillables pour le rangement de bureau.", image: '' },
-        { id: 20, name: 'Ventilateur de bureau', category: 'Électrique', price: 13500, stock: 28, status: 'active', description: "Ventilateur silencieux avec 3 vitesses, idéal pour poser sur un bureau.", image: '' },
-    ];
-
+    let PRODUCTS_ = JSON.parse(
+        document.getElementById('produits-data').textContent
+    );
+    const PRODUCTS=JSON.parse(PRODUCTS_)
+   
     const PER_PAGE = 8;
 
     let currentPage = 1;
@@ -117,7 +99,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     ${statusBadge}
                 </div>
                 <p class="text-xs text-neutral-400 dark:text-gray-500 mb-2">${product.category}</p>
-                <p class="product-desc text-xs text-neutral-400 dark:text-gray-500 mb-3">${product.description}</p>
+                
                 <div class="flex items-center justify-between mt-1">
                     <p class="text-base font-semibold text-neutral-800 dark:text-white">${formatFCFA(product.price)} <span class="text-xs font-normal text-neutral-400 dark:text-gray-500">FCFA</span></p>
                     <span class="text-xs text-neutral-400 dark:text-gray-500">Stock: ${product.stock}</span>
@@ -284,4 +266,189 @@ document.addEventListener('DOMContentLoaded', () => {
     ========================================================= */
     window.addEventListener('resize', () => requestAnimationFrame(layoutMasonry));
     renderCatalog();
+
+    /* =========================================================
+    ANIMATION AJOUT DE CATEGORIE APRES MESSAGE DJANGO
+    ========================================================= */
+
+    const categorieForm = document.getElementById('categorie-form');
+    const categorieSuccess = document.getElementById('categorie-success');
+    const btnNewCategory = document.getElementById('btn-new-category');
+    const categorieError = document.getElementById('categorie-form-error');
+    const btnSubmitCategorie = document.getElementById('btn-submit-categorie');
+
+
+    if (categorieForm) {
+
+        categorieForm.addEventListener('submit', async (e)=>{
+
+            e.preventDefault();
+
+
+            categorieError.classList.add('hidden');
+
+
+            btnSubmitCategorie.disabled = true;
+            btnSubmitCategorie.classList.add('opacity-60');
+
+
+            const formData = new FormData(categorieForm);
+
+
+
+            try {
+
+                const response = await fetch(
+                    categorieForm.action,
+                    {
+                        method:"POST",
+                        body:formData,
+                        headers:{
+                            "X-CSRFToken":
+                            document.querySelector(
+                                '[name=csrfmiddlewaretoken]'
+                            ).value
+                        }
+                    }
+                );
+
+
+                const data = await response.json();
+
+
+
+                if(data.success){
+
+
+                    // ajouter automatiquement dans le select produit
+
+                    const select = document.getElementById(
+                        "id_categorie"
+                    );
+
+
+                    if(select){
+
+                        const option =
+                        document.createElement("option");
+
+
+                        option.value=data.id;
+                        option.textContent=data.nom;
+                        option.selected=true;
+
+
+                        select.appendChild(option);
+
+                    }
+
+
+
+                    // afficher animation succès
+
+                    document.getElementById(
+                        "categorie-success-name"
+                    ).textContent=data.nom;
+
+
+
+                    categorieForm.classList.add("hidden");
+
+
+                    categorieSuccess.classList.remove("hidden");
+
+                    categorieSuccess.classList.add("flex");
+
+
+
+                    btnNewCategory.classList.remove("hidden");
+
+                    btnNewCategory.classList.add("flex");
+
+
+
+                    categorieForm.reset();
+
+
+
+                }else{
+
+
+                    categorieError.textContent =
+                    "Erreur lors de l'ajout";
+
+
+                    categorieError.classList.remove("hidden");
+
+                }
+
+
+
+            }catch(error){
+
+
+                categorieError.textContent =
+                "Une erreur est survenue";
+
+
+                categorieError.classList.remove("hidden");
+
+            }
+
+
+
+            finally{
+
+
+                btnSubmitCategorie.disabled=false;
+
+                btnSubmitCategorie.classList.remove(
+                    "opacity-60"
+                );
+
+
+            }
+
+
+
+        });
+
+
+    }
+    if(btnNewCategory){
+
+        btnNewCategory.addEventListener(
+            "click",
+            ()=>{
+                categorieSuccess.classList.add(
+                    "hidden"
+                );
+                categorieSuccess.classList.remove(
+                    "flex"
+                );
+                categorieForm.classList.remove(
+                    "hidden"
+                );
+
+
+                btnNewCategory.classList.add(
+                    "hidden"
+                );
+
+
+                btnNewCategory.classList.remove(
+                    "flex"
+                );
+
+
+            }
+            );
+
+    }
+
+    if (document.getElementById('btn-cancel-produit-inline')) {
+        document.getElementById('btn-cancel-produit-inline').addEventListener('click', () => {
+            btnCancelProduit.click();
+        });
+    }
 });

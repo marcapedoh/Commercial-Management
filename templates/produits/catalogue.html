@@ -128,7 +128,159 @@
             </div>
 
             <!-- Zone réservée au formulaire : à compléter -->
-            <div id="produit-form-zone"></div>
+            <div id="produit-form-zone">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+
+                    <!-- COLONNE GAUCHE : INFORMATIONS DU PRODUIT -->
+                    <form method="post" id="produit-info-form" class="space-y-5" action="{% url 'produits:ajouter_produit' %}">
+                        {% csrf_token %}
+                        <p class="text-xs font-semibold uppercase tracking-wide text-neutral-400 dark:text-gray-500">
+                            Informations du produit
+                        </p>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs text-neutral-500 dark:text-gray-400 mb-1.5">{{ form.reference.label }}</label>
+                                {{ form.reference }}
+                                {% if form.reference.errors %}<p class="text-xs text-rose-500 mt-1">{{ form.reference.errors.0 }}</p>{% endif %}
+                            </div>
+                            <div>
+                                <label class="block text-xs text-neutral-500 dark:text-gray-400 mb-1.5">{{ form.designation.label }}</label>
+                                {{ form.designation }}
+                                {% if form.designation.errors %}<p class="text-xs text-rose-500 mt-1">{{ form.designation.errors.0 }}</p>{% endif %}
+                            </div>
+
+                            <div class="sm:col-span-2">
+                                <label class="block text-xs text-neutral-500 dark:text-gray-400 mb-1.5">{{ form.categorie.label }}</label>
+                                {{ form.categorie }}
+                                {% if form.categorie.errors %}<p class="text-xs text-rose-500 mt-1">{{ form.categorie.errors.0 }}</p>{% endif %}
+                            </div>
+
+                            <div>
+                                <label class="block text-xs text-neutral-500 dark:text-gray-400 mb-1.5">{{ form.prix_achat.label }}</label>
+                                {{ form.prix_achat }}
+                            </div>
+                            <div>
+                                <label class="block text-xs text-neutral-500 dark:text-gray-400 mb-1.5">{{ form.prix_vente.label }}</label>
+                                {{ form.prix_vente }}
+                            </div>
+
+                            {% if not form.instance.pk %}
+                            <div>
+                                <label class="block text-xs text-neutral-500 dark:text-gray-400 mb-1.5">Stock initial</label>
+                                {{ form.stock_actuel }}
+                            </div>
+                            {% endif %}
+
+                            <div>
+                                <label class="block text-xs text-neutral-500 dark:text-gray-400 mb-1.5">{{ form.seuil_alerte.label }}</label>
+                                {{ form.seuil_alerte }}
+                            </div>
+                            <div>
+                                <label class="block text-xs text-neutral-500 dark:text-gray-400 mb-1.5">{{ form.stock_securite.label }}</label>
+                                {{ form.stock_securite }}
+                            </div>
+                            <div class="sm:col-span-2">
+                                <label class="block text-xs text-neutral-500 dark:text-gray-400 mb-1.5">{{ form.stock_min.label }}</label>
+                                {{ form.stock_min }}
+                            </div>
+                        </div>
+
+                        {% if form.instance.pk %}
+                        <div class="rounded-lg px-4 py-3 border bg-amber-50/60 border-amber-200 dark:bg-white/[0.03] dark:border-white/10">
+                            <p class="text-xs text-neutral-500 dark:text-gray-400 mb-1">Stock actuel</p>
+                            <p class="text-lg font-semibold text-neutral-800 dark:text-white">
+                                {{ form.instance.stock_actuel }} unité{{ form.instance.stock_actuel|pluralize }}
+                            </p>
+                            <p class="text-xs text-neutral-400 dark:text-gray-500 mt-1">
+                                Le stock est mis à jour automatiquement par les achats et les ventes.
+                            </p>
+                        </div>
+                        {% endif %}
+
+                        <div class="flex items-center gap-3">
+                            {{ form.actif }}
+                            <label for="{{ form.actif.id_for_label }}" class="text-sm text-neutral-600 dark:text-gray-300">Produit actif</label>
+                        </div>
+
+                        {% if form.non_field_errors %}
+                        <div class="text-sm text-rose-500">{{ form.non_field_errors }}</div>
+                        {% endif %}
+
+                        <div class="flex justify-end gap-3 pt-2">
+                            <button type="button" id="btn-cancel-produit-inline"
+                                    class="px-5 py-2.5 rounded-full text-sm font-medium border transition
+                                        border-amber-200 text-neutral-600 hover:bg-amber-50
+                                        dark:border-white/10 dark:text-gray-300 dark:hover:bg-white/5">
+                                Annuler
+                            </button>
+                            <button type="submit"
+                                    class="px-6 py-2.5 rounded-full text-sm font-semibold text-white transition hover:opacity-90
+                                        bg-gradient-to-r from-amber-400 to-yellow-500 dark:from-[#1ecb8b] dark:to-[#149766] dark:text-[#0d1117]">
+                                Enregistrer le produit
+                            </button>
+                        </div>
+                    </form>
+
+                    <!-- COLONNE DROITE : AJOUT DE CATEGORIE -->
+                    <div class="rounded-2xl p-5 border relative
+                                bg-amber-50/40 border-amber-200/60
+                                dark:bg-white/[0.02] dark:border-white/5">
+
+                        <div class="flex items-center justify-between mb-4">
+                            <p class="text-xs font-semibold uppercase tracking-wide text-neutral-400 dark:text-gray-500">
+                                Catégorie absente ?
+                            </p>
+                            <button type="button" id="btn-new-category"
+                                    class="hidden items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border transition
+                                        border-amber-200 text-neutral-600 hover:bg-amber-50
+                                        dark:border-white/10 dark:text-gray-300 dark:hover:bg-white/5">
+                                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                                </svg>
+                                Nouvelle catégorie
+                            </button>
+                        </div>
+
+                        <!-- ETAT 1 : FORMULAIRE D'AJOUT DE CATEGORIE -->
+                        <form method="post" action="{% url 'produits:ajouter_categorie' %}" id="categorie-form" class="space-y-4">
+                            {% csrf_token %}
+                            <p class="text-sm text-neutral-500 dark:text-gray-400">
+                                Ajoutez rapidement une nouvelle catégorie si celle recherchée n'existe pas encore dans la liste.
+                            </p>
+
+                            <div>
+                                <label class="block text-xs text-neutral-500 dark:text-gray-400 mb-1.5">{{ categorie_form.nom.label }}</label>
+                                {{ categorie_form.nom }}
+                            </div>
+                            <div>
+                                <label class="block text-xs text-neutral-500 dark:text-gray-400 mb-1.5">{{ categorie_form.description.label }}</label>
+                                {{ categorie_form.description }}
+                            </div>
+
+                            <div id="categorie-form-error" class="hidden text-xs text-rose-500"></div>
+
+                            <button type="submit" id="btn-submit-categorie"
+                                    class="w-full flex items-center justify-center gap-2 py-2.5 rounded-full text-sm font-medium text-white transition hover:opacity-90
+                                        bg-gradient-to-r from-amber-400 to-yellow-500 dark:from-[#1ecb8b] dark:to-[#149766] dark:text-[#0d1117]">
+                                Ajouter la catégorie
+                            </button>
+                        </form>
+
+                        <!-- ETAT 2 : CONFIRMATION DE SUCCES -->
+                        <div id="categorie-success" class="hidden flex-col items-center text-center gap-2 py-8">
+                            <div class="w-14 h-14 rounded-full flex items-center justify-center mb-1
+                                        bg-emerald-50 dark:bg-emerald-500/10">
+                                <svg class="w-7 h-7 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                                </svg>
+                            </div>
+                            <p class="text-sm font-medium text-neutral-800 dark:text-white">Catégorie ajoutée avec succès</p>
+                            <p id="categorie-success-name" class="text-xs text-neutral-400 dark:text-gray-500"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
     </div>
@@ -136,5 +288,42 @@
 {% endblock %}
 
 {% block scripts %}
+{{ produits_json|json_script:"produits-data" }}
 <script src="{% static 'js/produit.js' %}"></script>
 {% endblock %}
+<script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
+
+<script>
+
+const notyf = new Notyf({
+
+    duration: 3000,
+
+    position: {
+        x: 'right',
+        y: 'top',
+    },
+
+});
+
+
+{% if messages %}
+
+{% for message in messages %}
+
+
+notyf.open({
+
+    type: "{{ message.tags }}",
+
+    message: "{{ message|escapejs }}"
+
+});
+
+
+{% endfor %}
+
+{% endif %}
+
+
+</script>
