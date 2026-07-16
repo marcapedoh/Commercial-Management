@@ -48,4 +48,4 @@ def logout_view(request):
 
 @login_required
 def dashboard_view(request):
-    return render(request, 'dashboard/dashboard.html')
+    return render(request, "dashboard/dashboard.html")
