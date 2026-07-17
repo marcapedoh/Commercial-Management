@@ -2,263 +2,518 @@
 {% load static %}
 {% block content %}
 <main class="px-6 sm:px-8 py-6 space-y-6">
-                <div>
-                    <h1 class="text-2xl font-semibold text-neutral-800 dark:text-white">Bonjour et bienvenue, {{user_data.username}}</h1>
-                    <p class="text-sm text-neutral-500 dark:text-gray-400">Rester au top de vos tâches, Suivre en temps réel l'évolution de vos processus métier.</p>
+    <div>
+        <h1 class="text-2xl font-semibold text-neutral-800 dark:text-white">Bonjour et bienvenue
+        </h1>
+        <p class="text-sm text-neutral-500 dark:text-gray-400">Rester au top de vos tâches, Suivre en temps réel
+            l'évolution de vos processus métier.</p>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+        <!-- LEFT COLUMN (inchangée, pas d'équivalent en base de données) -->
+        <div class="lg:col-span-1 space-y-6">
+            <div class="rounded-2xl p-6 border transition-colors
+                        bg-white/70 border-amber-200/60 backdrop-blur-xl
+                        dark:bg-[#161b24] dark:border-white/5">
+                <div class="flex items-center justify-between mb-1">
+                    <p class="text-sm text-neutral-500 dark:text-gray-400">Total Balance</p>
+                    <span class="flex items-center gap-1 text-xs font-medium px-2 py-1 rounded-full
+                                 bg-amber-100 text-amber-700 dark:bg-white/5 dark:text-gray-300">
+                        USD
+                        <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                        </svg>
+                    </span>
+                </div>
+                <p class="text-3xl font-semibold text-neutral-800 dark:text-white mb-1">689,372.00</p>
+                <p class="text-xs text-emerald-500 mb-5">&uarr; 5% <span
+                        class="text-neutral-400 dark:text-gray-500">than last month</span></p>
+
+                <div class="flex gap-3 mb-5">
+                    <button class="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-full text-sm font-medium text-white
+                                   bg-neutral-900 dark:bg-[#1ecb8b] dark:text-[#0d1117]">
+                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M7.5 21 3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" />
+                        </svg>
+                        Transfer
+                    </button>
+                    <button class="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-full text-sm font-medium
+                                   border border-amber-200 text-neutral-600 hover:bg-amber-50
+                                   dark:border-white/10 dark:text-gray-300 dark:hover:bg-white/5">
+                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M16.5 12H21m0 0-3.75-3.75M21 12l-3.75 3.75M3 12h4.5m0-6.75L3 12l4.5 6.75" />
+                        </svg>
+                        Request
+                    </button>
                 </div>
 
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-
-                    <!-- LEFT COLUMN -->
-                    <div class="lg:col-span-1 space-y-6">
-
-                        <!-- TOTAL BALANCE -->
-                        <div class="rounded-2xl p-6 border transition-colors
-                                    bg-white/70 border-amber-200/60 backdrop-blur-xl
-                                    dark:bg-[#161b24] dark:border-white/5">
-                            <div class="flex items-center justify-between mb-1">
-                                <p class="text-sm text-neutral-500 dark:text-gray-400">Total Balance</p>
-                                <span class="flex items-center gap-1 text-xs font-medium px-2 py-1 rounded-full
-                                             bg-amber-100 text-amber-700 dark:bg-white/5 dark:text-gray-300">
-                                    USD
-                                    <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" /></svg>
-                                </span>
-                            </div>
-                            <p class="text-3xl font-semibold text-neutral-800 dark:text-white mb-1">$689,372.00</p>
-                            <p class="text-xs text-emerald-500 mb-5">&uarr; 5% <span class="text-neutral-400 dark:text-gray-500">than last month</span></p>
-
-                            <div class="flex gap-3 mb-5">
-                                <button class="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-full text-sm font-medium text-white
-                                               bg-neutral-900 dark:bg-[#1ecb8b] dark:text-[#0d1117]">
-                                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 21 3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" /></svg>
-                                    Transfer
-                                </button>
-                                <button class="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-full text-sm font-medium
-                                               border border-amber-200 text-neutral-600 hover:bg-amber-50
-                                               dark:border-white/10 dark:text-gray-300 dark:hover:bg-white/5">
-                                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 12H21m0 0-3.75-3.75M21 12l-3.75 3.75M3 12h4.5m0-6.75L3 12l4.5 6.75" /></svg>
-                                    Request
-                                </button>
-                            </div>
-
-                            <div class="flex items-center justify-between mb-3">
-                                <p class="text-xs font-medium text-neutral-400 dark:text-gray-500">Wallets | Total 6 wallets</p>
-                            </div>
-
-                            <div class="space-y-3">
-                                <div class="flex items-center justify-between">
-                                    <div class="flex items-center gap-2">
-                                        <span class="text-lg">🇺🇸</span>
-                                        <div>
-                                            <p class="text-sm font-medium text-neutral-800 dark:text-white">$22,678.00</p>
-                                            <p class="text-xs text-neutral-400 dark:text-gray-500">Limit is $50k a month</p>
-                                        </div>
-                                    </div>
-                                    <span class="text-xs px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400">Active</span>
-                                </div>
-                                <div class="flex items-center justify-between">
-                                    <div class="flex items-center gap-2">
-                                        <span class="text-lg">🇪🇺</span>
-                                        <div>
-                                            <p class="text-sm font-medium text-neutral-800 dark:text-white">€18,345.00</p>
-                                            <p class="text-xs text-neutral-400 dark:text-gray-500">Limit is €60k a month</p>
-                                        </div>
-                                    </div>
-                                    <span class="text-xs px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400">Active</span>
-                                </div>
-                                <div class="flex items-center justify-between">
-                                    <div class="flex items-center gap-2">
-                                        <span class="text-lg">🇬🇧</span>
-                                        <div>
-                                            <p class="text-sm font-medium text-neutral-800 dark:text-white">£15,000.00</p>
-                                            <p class="text-xs text-neutral-400 dark:text-gray-500">Limit is £75k a month</p>
-                                        </div>
-                                    </div>
-                                    <span class="text-xs px-2 py-0.5 rounded-full bg-neutral-100 text-neutral-400 dark:bg-white/5 dark:text-gray-500">Inactive</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- MONTHLY SPENDING LIMIT -->
-                        <div class="rounded-2xl p-6 border transition-colors
-                                    bg-white/70 border-amber-200/60 backdrop-blur-xl
-                                    dark:bg-[#161b24] dark:border-white/5">
-                            <p class="text-sm font-medium text-neutral-700 dark:text-gray-300 mb-4">Monthly Spending Limit</p>
-                            <div class="h-2 rounded-full bg-amber-100 dark:bg-white/5 overflow-hidden mb-3">
-                                <div class="h-full rounded-full bg-gradient-to-r from-amber-400 to-orange-400 dark:from-[#1ecb8b] dark:to-[#149766]" style="width:25%"></div>
-                            </div>
-                            <div class="flex items-center justify-between text-xs text-neutral-400 dark:text-gray-500">
-                                <span><span class="font-medium text-neutral-700 dark:text-gray-200">$1,400.00</span> spent out of</span>
-                                <span class="font-medium text-neutral-700 dark:text-gray-200">$5,500.00</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- MIDDLE COLUMN -->
-                    <div class="lg:col-span-1 space-y-6">
-                        <div class="grid grid-cols-2 gap-4">
-                            <div class="rounded-2xl p-5 text-white bg-gradient-to-br from-amber-400 to-orange-500 dark:from-[#1ecb8b] dark:to-[#0f6e4f]">
-                                <div class="flex items-center justify-between mb-4">
-                                    <p class="text-xs opacity-90">Total Earnings</p>
-                                    <svg class="w-4 h-4 opacity-90" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0 1 15.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 0 1 3 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 0 0-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 0 1-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 0 0 3 15h-.75M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm3 0h.008v.008H18V10.5Zm-12 0h.008v.008H6V10.5Z" /></svg>
-                                </div>
-                                <p class="text-2xl font-semibold mb-1">$950</p>
-                                <p class="text-xs opacity-90">&uarr; 7% This month</p>
-                            </div>
-                            <div class="rounded-2xl p-5 border
-                                        bg-white/70 border-amber-200/60 backdrop-blur-xl
-                                        dark:bg-[#161b24] dark:border-white/5">
-                                <div class="flex items-center justify-between mb-4">
-                                    <p class="text-xs text-neutral-500 dark:text-gray-400">Total Spending</p>
-                                    <svg class="w-4 h-4 text-neutral-400 dark:text-gray-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0 1 15.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75" /></svg>
-                                </div>
-                                <p class="text-2xl font-semibold text-neutral-800 dark:text-white mb-1">$700</p>
-                                <p class="text-xs text-rose-500">&darr; 5% This month</p>
-                            </div>
-                            <div class="rounded-2xl p-5 border
-                                        bg-white/70 border-amber-200/60 backdrop-blur-xl
-                                        dark:bg-[#161b24] dark:border-white/5">
-                                <div class="flex items-center justify-between mb-4">
-                                    <p class="text-xs text-neutral-500 dark:text-gray-400">Total Income</p>
-                                    <svg class="w-4 h-4 text-neutral-400 dark:text-gray-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3M3.75 4.5h16.5a1.5 1.5 0 0 1 1.5 1.5v12a1.5 1.5 0 0 1-1.5 1.5H3.75a1.5 1.5 0 0 1-1.5-1.5V6a1.5 1.5 0 0 1 1.5-1.5Z" /></svg>
-                                </div>
-                                <p class="text-2xl font-semibold text-neutral-800 dark:text-white mb-1">$1,050</p>
-                                <p class="text-xs text-emerald-500">&uarr; 8% This month</p>
-                            </div>
-                            <div class="rounded-2xl p-5 border
-                                        bg-white/70 border-amber-200/60 backdrop-blur-xl
-                                        dark:bg-[#161b24] dark:border-white/5">
-                                <div class="flex items-center justify-between mb-4">
-                                    <p class="text-xs text-neutral-500 dark:text-gray-400">Total Revenue</p>
-                                    <svg class="w-4 h-4 text-neutral-400 dark:text-gray-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182 1.107-.879 2.9-.879 4.006 0l.415.33M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>
-                                </div>
-                                <p class="text-2xl font-semibold text-neutral-800 dark:text-white mb-1">$850</p>
-                                <p class="text-xs text-emerald-500">&uarr; 4% This month</p>
-                            </div>
-                        </div>
-
-                        <!-- MY CARDS (deplace ici, a la place du tableau) -->
-                        <div class="rounded-2xl p-6 border transition-colors
-                                    bg-white/70 border-amber-200/60 backdrop-blur-xl
-                                    dark:bg-[#161b24] dark:border-white/5">
-                            <div class="flex items-center justify-between mb-4">
-                                <p class="text-sm font-medium text-neutral-700 dark:text-gray-300">My Cards</p>
-                                <button class="text-xs font-medium flex items-center gap-1 text-amber-600 dark:text-[#1ecb8b]">
-                                    <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>
-                                    Add new
-                                </button>
-                            </div>
-                            <div class="flex gap-3 overflow-x-auto pb-1">
-                                <div class="min-w-[170px] rounded-xl p-4 text-white bg-gradient-to-br from-neutral-800 to-neutral-950">
-                                    <div class="flex justify-between items-center mb-6">
-                                        <span class="text-xs px-2 py-0.5 rounded-full bg-white/10">Active</span>
-                                        <span class="w-4 h-4 rounded-full bg-red-500 -mr-1"></span>
-                                        <span class="w-4 h-4 rounded-full bg-amber-400 opacity-80 -ml-2"></span>
-                                    </div>
-                                    <p class="text-[10px] text-white/50 mb-0.5">Card Number</p>
-                                    <p class="text-sm mb-2 tracking-wide">**** **** 6782</p>
-                                    <p class="text-[10px] text-white/50">EXP <span class="text-white/80">09/29</span> &nbsp; CVV <span class="text-white/80">611</span></p>
-                                </div>
-                                <div class="min-w-[170px] rounded-xl p-4 text-white bg-gradient-to-br from-amber-400 to-orange-500 dark:from-[#1ecb8b] dark:to-[#0f6e4f]">
-                                    <div class="flex justify-between items-center mb-6">
-                                        <span class="text-xs px-2 py-0.5 rounded-full bg-white/20">Active</span>
-                                    </div>
-                                    <p class="text-[10px] text-white/70 mb-0.5">Card Number</p>
-                                    <p class="text-sm mb-2 tracking-wide">**** **** 4356</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- RIGHT COLUMN : CHART -->
-                    <div class="lg:col-span-1">
-                        <div class="rounded-2xl p-6 border transition-colors
-                                    bg-white/70 border-amber-200/60 backdrop-blur-xl
-                                    dark:bg-[#161b24] dark:border-white/5">
-                            <p class="text-sm font-semibold text-neutral-800 dark:text-white">Total Income</p>
-                            <p class="text-xs text-neutral-400 dark:text-gray-500 mb-4">View your income in a certain period of time</p>
-                            <div id="income-chart"></div>
-                        </div>
-                    </div>
+                <div class="flex items-center justify-between mb-3">
+                    <p class="text-xs font-medium text-neutral-400 dark:text-gray-500">Wallets | Total 6 wallets</p>
                 </div>
 
-                <!-- RECENT ACTIVITIES : pleine largeur en bas, plus d'espace -->
-                <div class="rounded-2xl p-6 border transition-colors
+                <div class="space-y-3">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <span class="text-lg">🇺🇸</span>
+                            <div>
+                                <p class="text-sm font-medium text-neutral-800 dark:text-white">22,678.00</p>
+                                <p class="text-xs text-neutral-400 dark:text-gray-500">Limit is $50k a month</p>
+                            </div>
+                        </div>
+                        <span
+                            class="text-xs px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400">Active</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <span class="text-lg">🇪🇺</span>
+                            <div>
+                                <p class="text-sm font-medium text-neutral-800 dark:text-white">€18,345.00</p>
+                                <p class="text-xs text-neutral-400 dark:text-gray-500">Limit is €60k a month</p>
+                            </div>
+                        </div>
+                        <span
+                            class="text-xs px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400">Active</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <span class="text-lg">🇬🇧</span>
+                            <div>
+                                <p class="text-sm font-medium text-neutral-800 dark:text-white">£15,000.00</p>
+                                <p class="text-xs text-neutral-400 dark:text-gray-500">Limit is £75k a month</p>
+                            </div>
+                        </div>
+                        <span
+                            class="text-xs px-2 py-0.5 rounded-full bg-neutral-100 text-neutral-400 dark:bg-white/5 dark:text-gray-500">Inactive</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="rounded-2xl p-6 border transition-colors
+                        bg-white/70 border-amber-200/60 backdrop-blur-xl
+                        dark:bg-[#161b24] dark:border-white/5">
+                <p class="text-sm font-medium text-neutral-700 dark:text-gray-300 mb-4">Monthly Spending Limit</p>
+                <div class="h-2 rounded-full bg-amber-100 dark:bg-white/5 overflow-hidden mb-3">
+                    <div class="h-full rounded-full bg-gradient-to-r from-amber-400 to-orange-400 dark:from-[#1ecb8b] dark:to-[#149766]"
+                        style="width:25%"></div>
+                </div>
+                <div class="flex items-center justify-between text-xs text-neutral-400 dark:text-gray-500">
+                    <span><span class="font-medium text-neutral-700 dark:text-gray-200">1,400.00</span> spent out
+                        of</span>
+                    <span class="font-medium text-neutral-700 dark:text-gray-200">5,500.00</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- MIDDLE COLUMN — stats réelles -->
+        <div class="lg:col-span-1 space-y-6">
+            <div class="grid grid-cols-2 gap-4">
+                <div
+                    class="rounded-2xl p-5 text-white bg-gradient-to-br from-amber-400 to-orange-500 dark:from-[#1ecb8b] dark:to-[#0f6e4f]">
+                    <div class="flex items-center justify-between mb-4">
+                        <p class="text-xs opacity-90">Bénéfice du jour</p>
+                        <svg class="w-4 h-4 opacity-90" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M2.25 18.75a60.07 60.07 0 0 1 15.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 0 1 3 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 0 0-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 0 1-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 0 0 3 15h-.75M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm3 0h.008v.008H18V10.5Zm-12 0h.008v.008H6V10.5Z" />
+                        </svg>
+                    </div>
+                    <p class="text-2xl font-semibold mb-1">{{ benefice_jour|floatformat:0 }}</p>
+                    <p class="text-xs opacity-90">FCFA aujourd'hui</p>
+                </div>
+                <div class="rounded-2xl p-5 border
                             bg-white/70 border-amber-200/60 backdrop-blur-xl
                             dark:bg-[#161b24] dark:border-white/5">
-                    <div class="flex items-center justify-between mb-5 gap-3 flex-wrap">
-                        <p class="text-sm font-semibold text-neutral-800 dark:text-white">Recent Activities</p>
-                        <div class="flex items-center gap-2">
-                            <div class="flex items-center gap-2 px-3 py-1.5 rounded-full text-xs border
-                                        border-amber-200 text-neutral-500 dark:border-white/10 dark:text-gray-400">
-                                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" /></svg>
-                                Search
-                            </div>
-                            <div class="flex items-center gap-1 px-3 py-1.5 rounded-full text-xs border
-                                        border-amber-200 text-neutral-500 dark:border-white/10 dark:text-gray-400">
-                                Filter
-                                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v17.25m0 0-3.75-3.75M12 20.25l3.75-3.75M20.25 3H3.75" /></svg>
-                            </div>
-                        </div>
+                    <div class="flex items-center justify-between mb-4">
+                        <p class="text-xs text-neutral-500 dark:text-gray-400">Achats du mois</p>
+                        <svg class="w-4 h-4 text-neutral-400 dark:text-gray-500" fill="none" viewBox="0 0 24 24"
+                            stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M2.25 18.75a60.07 60.07 0 0 1 15.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75" />
+                        </svg>
                     </div>
+                    <p class="text-2xl font-semibold text-neutral-800 dark:text-white mb-1">15480000</p>
+                    <p class="text-xs text-neutral-400 dark:text-gray-500">FCFA ce mois</p>
+                </div>
+                <div class="rounded-2xl p-5 border
+                            bg-white/70 border-amber-200/60 backdrop-blur-xl
+                            dark:bg-[#161b24] dark:border-white/5">
+                    <div class="flex items-center justify-between mb-4">
+                        <p class="text-xs text-neutral-500 dark:text-gray-400">CA du jour</p>
+                        <svg class="w-4 h-4 text-neutral-400 dark:text-gray-500" fill="none" viewBox="0 0 24 24"
+                            stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3M3.75 4.5h16.5a1.5 1.5 0 0 1 1.5 1.5v12a1.5 1.5 0 0 1-1.5 1.5H3.75a1.5 1.5 0 0 1-1.5-1.5V6a1.5 1.5 0 0 1 1.5-1.5Z" />
+                        </svg>
+                    </div>
+                    <p class="text-2xl font-semibold text-neutral-800 dark:text-white mb-1">{{ ca_jour|floatformat:0 }}
+                    </p>
+                    <p class="text-xs text-emerald-500">FCFA aujourd'hui</p>
+                </div>
+                <div class="rounded-2xl p-5 border
+                            bg-white/70 border-amber-200/60 backdrop-blur-xl
+                            dark:bg-[#161b24] dark:border-white/5">
+                    <div class="flex items-center justify-between mb-4">
+                        <p class="text-xs text-neutral-500 dark:text-gray-400">CA du mois</p>
+                        <svg class="w-4 h-4 text-neutral-400 dark:text-gray-500" fill="none" viewBox="0 0 24 24"
+                            stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M12 6v12m-3-2.818.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182 1.107-.879 2.9-.879 4.006 0l.415.33M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                        </svg>
+                    </div>
+                    <p class="text-2xl font-semibold text-neutral-800 dark:text-white mb-1">{{ ca_mois|floatformat:0 }}
+                    </p>
+                    <p class="text-xs text-emerald-500">FCFA ce mois</p>
+                </div>
+            </div>
 
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-sm">
-                            <thead>
-                                <tr class="text-xs text-neutral-400 dark:text-gray-500">
-                                    <th class="text-left font-medium pb-3">Order ID</th>
-                                    <th class="text-left font-medium pb-3">Activity</th>
-                                    <th class="text-left font-medium pb-3">Price</th>
-                                    <th class="text-left font-medium pb-3">Status</th>
-                                    <th class="text-left font-medium pb-3">Date</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-amber-100 dark:divide-white/5">
-                                <tr>
-                                    <td class="py-3 text-neutral-700 dark:text-gray-300">INV_000076</td>
-                                    <td class="py-3 text-neutral-700 dark:text-gray-300">Mobile App Purchase</td>
-                                    <td class="py-3 text-neutral-700 dark:text-gray-300">$25,500</td>
-                                    <td class="py-3"><span class="inline-flex items-center gap-1 text-emerald-500 text-xs"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>Completed</span></td>
-                                    <td class="py-3 text-neutral-400 dark:text-gray-500">17 Apr, 2026</td>
-                                </tr>
-                                <tr>
-                                    <td class="py-3 text-neutral-700 dark:text-gray-300">INV_000075</td>
-                                    <td class="py-3 text-neutral-700 dark:text-gray-300">Hotel Booking</td>
-                                    <td class="py-3 text-neutral-700 dark:text-gray-300">$32,750</td>
-                                    <td class="py-3"><span class="inline-flex items-center gap-1 text-rose-500 text-xs"><span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span>Pending</span></td>
-                                    <td class="py-3 text-neutral-400 dark:text-gray-500">15 Apr, 2026</td>
-                                </tr>
-                                <tr>
-                                    <td class="py-3 text-neutral-700 dark:text-gray-300">INV_000074</td>
-                                    <td class="py-3 text-neutral-700 dark:text-gray-300">Flight Ticket Booking</td>
-                                    <td class="py-3 text-neutral-700 dark:text-gray-300">$40,200</td>
-                                    <td class="py-3"><span class="inline-flex items-center gap-1 text-emerald-500 text-xs"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>Completed</span></td>
-                                    <td class="py-3 text-neutral-400 dark:text-gray-500">15 Apr, 2026</td>
-                                </tr>
-                                <tr>
-                                    <td class="py-3 text-neutral-700 dark:text-gray-300">INV_000073</td>
-                                    <td class="py-3 text-neutral-700 dark:text-gray-300">Grocery Purchase</td>
-                                    <td class="py-3 text-neutral-700 dark:text-gray-300">$50,200</td>
-                                    <td class="py-3"><span class="inline-flex items-center gap-1 text-amber-500 text-xs"><span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>In Progress</span></td>
-                                    <td class="py-3 text-neutral-400 dark:text-gray-500">14 Apr, 2026</td>
-                                </tr>
-                                <tr>
-                                    <td class="py-3 text-neutral-700 dark:text-gray-300">INV_000072</td>
-                                    <td class="py-3 text-neutral-700 dark:text-gray-300">Software License</td>
-                                    <td class="py-3 text-neutral-700 dark:text-gray-300">$15,900</td>
-                                    <td class="py-3"><span class="inline-flex items-center gap-1 text-emerald-500 text-xs"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>Completed</span></td>
-                                    <td class="py-3 text-neutral-400 dark:text-gray-500">10 Apr, 2026</td>
-                                </tr>
-                            </tbody>
-                        </table>
+            <!-- MY CARDS (inchangé, pas d'équivalent en base de données) -->
+            <!-- <div class="rounded-2xl p-6 border transition-colors
+                        bg-white/70 border-amber-200/60 backdrop-blur-xl
+                        dark:bg-[#161b24] dark:border-white/5">
+                <div class="flex items-center justify-between mb-4">
+                    <p class="text-sm font-medium text-neutral-700 dark:text-gray-300">My Cards</p>
+                    <button class="text-xs font-medium flex items-center gap-1 text-amber-600 dark:text-[#1ecb8b]">
+                        <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                        </svg>
+                        Add new
+                    </button>
+                </div>
+                <div class="flex gap-3 overflow-x-auto pb-1">
+                    <div
+                        class="min-w-[170px] rounded-xl p-4 text-white bg-gradient-to-br from-neutral-800 to-neutral-950">
+                        <div class="flex justify-between items-center mb-6">
+                            <span class="text-xs px-2 py-0.5 rounded-full bg-white/10">Active</span>
+                            <span class="w-4 h-4 rounded-full bg-red-500 -mr-1"></span>
+                            <span class="w-4 h-4 rounded-full bg-amber-400 opacity-80 -ml-2"></span>
+                        </div>
+                        <p class="text-[10px] text-white/50 mb-0.5">Card Number</p>
+                        <p class="text-sm mb-2 tracking-wide">**** **** 6782</p>
+                        <p class="text-[10px] text-white/50">EXP <span class="text-white/80">09/29</span> &nbsp; CVV
+                            <span class="text-white/80">611</span>
+                        </p>
+                    </div>
+                    <div
+                        class="min-w-[170px] rounded-xl p-4 text-white bg-gradient-to-br from-amber-400 to-orange-500 dark:from-[#1ecb8b] dark:to-[#0f6e4f]">
+                        <div class="flex justify-between items-center mb-6">
+                            <span class="text-xs px-2 py-0.5 rounded-full bg-white/20">Active</span>
+                        </div>
+                        <p class="text-[10px] text-white/70 mb-0.5">Card Number</p>
+                        <p class="text-sm mb-2 tracking-wide">**** **** 4356</p>
                     </div>
                 </div>
-            </main>
+            </div> -->
+        </div>
 
+        <!-- RIGHT COLUMN : CHART (données réelles sur 8 mois) -->
+        <div class="lg:col-span-1">
+            <div class="rounded-2xl p-6 border transition-colors
+                        bg-white/70 border-amber-200/60 backdrop-blur-xl
+                        dark:bg-[#161b24] dark:border-white/5">
+                <p class="text-sm font-semibold text-neutral-800 dark:text-white">Chiffre d'affaires &amp; marge</p>
+                <p class="text-xs text-neutral-400 dark:text-gray-500 mb-4">Évolution sur les 8 derniers mois</p>
+                <div id="income-chart"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= ANALYSES FINANCIÈRES (Fonctionnalité 3) ================= -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="rounded-2xl p-5 border bg-white/70 border-amber-200/60 backdrop-blur-xl
+                    dark:bg-[#161b24] dark:border-white/5">
+            <p class="text-xs text-neutral-500 dark:text-gray-400 mb-2">Bénéfice du mois</p>
+            <p class="text-2xl font-semibold text-emerald-500">{{ benefice_mois|floatformat:0 }}</p>
+            <p class="text-xs text-neutral-400 dark:text-gray-500 mt-1">FCFA</p>
+        </div>
+        <div class="rounded-2xl p-5 border bg-white/70 border-amber-200/60 backdrop-blur-xl
+                    dark:bg-[#161b24] dark:border-white/5">
+            <p class="text-xs text-neutral-500 dark:text-gray-400 mb-2">Bénéfice annuel</p>
+            <p class="text-2xl font-semibold text-emerald-500">{{ benefice_annee|floatformat:0 }}</p>
+            <p class="text-xs text-neutral-400 dark:text-gray-500 mt-1">FCFA</p>
+        </div>
+        <div class="rounded-2xl p-5 border bg-white/70 border-amber-200/60 backdrop-blur-xl
+                    dark:bg-[#161b24] dark:border-white/5">
+            <p class="text-xs text-neutral-500 dark:text-gray-400 mb-2">Taux de marge global</p>
+            <p class="text-2xl font-semibold text-amber-600 dark:text-[#f2c94c]">{{ taux_marge_global }}%</p>
+        </div>
+        <div class="rounded-2xl p-5 border bg-white/70 border-amber-200/60 backdrop-blur-xl
+                    dark:bg-[#161b24] dark:border-white/5">
+            <p class="text-xs text-neutral-500 dark:text-gray-400 mb-2">Valeur totale du stock</p>
+            <p class="text-2xl font-semibold text-neutral-800 dark:text-white">{{ valeur_totale_stock|floatformat:0 }}
+            </p>
+            <p class="text-xs text-neutral-400 dark:text-gray-500 mt-1">FCFA</p>
+        </div>
+    </div>
+
+    <!-- ================= VALORISATION DU STOCK (Fonctionnalité 2) ================= -->
+    <div class="rounded-2xl p-6 border transition-colors
+                bg-white/70 border-amber-200/60 backdrop-blur-xl
+                dark:bg-[#161b24] dark:border-white/5">
+        <p class="text-sm font-semibold text-neutral-800 dark:text-white mb-1">Top produits immobilisant le plus
+            d'argent</p>
+        <p class="text-xs text-neutral-400 dark:text-gray-500 mb-4">Valeur = Prix d'achat &times; Quantité restante</p>
+        <div id="stock-value-chart"></div>
+    </div>
+
+    <!-- ================= RENTABILITE (Fonctionnalité 3) ================= -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div class="rounded-2xl p-6 border transition-colors
+                    bg-white/70 border-amber-200/60 backdrop-blur-xl
+                    dark:bg-[#161b24] dark:border-white/5">
+            <p class="text-sm font-semibold text-neutral-800 dark:text-white mb-4">Produits les plus rentables</p>
+            <div class="space-y-3">
+                {% if top_rentables %}
+
+                {% for r in top_rentables %}
+                <div class="flex items-center justify-between text-sm">
+                    <span>
+                        {{ r.produit__designation }}
+                    </span>
+
+                    <span>
+                        {{ r.marge_totale|floatformat:0 }} FCFA
+                    </span>
+                </div>
+                {% endfor %}
+
+                {% else %}
+
+                <p class="text-xs text-neutral-400">
+                    Aucune vente enregistrée pour le moment.
+                </p>
+
+                {% endif %}
+            </div>
+        </div>
+        <div class="rounded-2xl p-6 border transition-colors
+                    bg-white/70 border-amber-200/60 backdrop-blur-xl
+                    dark:bg-[#161b24] dark:border-white/5">
+            <p class="text-sm font-semibold text-neutral-800 dark:text-white mb-4">Produits les moins rentables</p>
+            <div class="space-y-3">
+                {% for r in moins_rentables %}
+                <div class="flex items-center justify-between text-sm">
+                    <span class="text-neutral-600 dark:text-gray-300">{{ r.produit__designation }}</span>
+                    <span class="font-medium text-rose-500">{{ r.marge_totale|floatformat:0 }} FCFA</span>
+                </div>
+                {% empty %}
+                <p class="text-xs text-neutral-400 dark:text-gray-500">Aucune vente enregistrée pour le moment.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= REAPPRO (Fonct. 4) + ROTATION / DORMANTS (Fonct. 6) ================= -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div class="rounded-2xl p-6 border transition-colors
+                    bg-white/70 border-amber-200/60 backdrop-blur-xl
+                    dark:bg-[#161b24] dark:border-white/5">
+            <p class="text-sm font-semibold text-neutral-800 dark:text-white mb-1">Réapprovisionnement conseillé</p>
+            <p class="text-xs text-neutral-400 dark:text-gray-500 mb-4">Basé sur les ventes moyennes des 30 derniers
+                jours</p>
+            <div class="space-y-3">
+                {% for r in reappro %}
+                <div
+                    class="flex items-center justify-between text-sm border-b border-amber-100 dark:border-white/5 pb-2 last:border-0">
+                    <div>
+                        <p class="text-neutral-700 dark:text-gray-300 font-medium">{{ r.nom }}</p>
+                        <p class="text-xs text-neutral-400 dark:text-gray-500">Stock : {{ r.stock_actuel }} — {{
+                            r.vente_moyenne }}/jour</p>
+                    </div>
+                    <span
+                        class="text-xs px-2 py-1 rounded-full bg-rose-50 text-rose-600 dark:bg-rose-500/10 dark:text-rose-400 whitespace-nowrap">
+                        {{ r.jours_restants }} j restants
+                    </span>
+                </div>
+                {% empty %}
+                <p class="text-xs text-neutral-400 dark:text-gray-500">Aucun produit ne nécessite de réapprovisionnement
+                    urgent.</p>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="rounded-2xl p-6 border transition-colors
+                    bg-white/70 border-amber-200/60 backdrop-blur-xl
+                    dark:bg-[#161b24] dark:border-white/5">
+            <p class="text-sm font-semibold text-neutral-800 dark:text-white mb-1">Produits dormants</p>
+            <p class="text-xs text-neutral-400 dark:text-gray-500 mb-4">Aucune vente depuis plus de 90 jours</p>
+            <div class="space-y-3">
+                {% for d in rotation_dormants %}
+                <div>
+                    <span>{{ d.nom }}</span>
+
+                    <span>
+                        {% if d.jours_derniere_vente %}
+                        il y a {{ d.jours_derniere_vente }} jours
+                        {% else %}
+                        jamais vendu
+                        {% endif %}
+                    </span>
+                </div>
+
+                {% empty %}
+                <p>Aucun produit dormant détecté.</p>
+
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= BILAN FINANCIER ================= -->
+    <div class="rounded-2xl p-6 border transition-colors
+                bg-white/70 border-amber-200/60 backdrop-blur-xl
+                dark:bg-[#161b24] dark:border-white/5">
+        <div class="flex items-center justify-between mb-2">
+            <p class="text-sm font-semibold text-neutral-800 dark:text-white">Bilan financier</p>
+            {% if en_profit %}
+            <span
+                class="text-xs px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400">En
+                profit</span>
+            {% else %}
+            <span
+                class="text-xs px-2 py-0.5 rounded-full bg-rose-50 text-rose-600 dark:bg-rose-500/10 dark:text-rose-400">En
+                perte</span>
+            {% endif %}
+        </div>
+        <p class="text-3xl font-semibold mb-1 {% if en_profit %}text-emerald-500{% else %}text-rose-500{% endif %}">
+            {{ bilan|floatformat:0 }} FCFA
+        </p>
+        <p class="text-xs text-neutral-400 dark:text-gray-500 mb-5">
+            {% if en_profit %}
+            L'entreprise génère plus de revenus (ventes) que de dépenses (achats).
+            {% else %}
+            Les achats dépassent actuellement les revenus générés par les ventes.
+            {% endif %}
+        </p>
+        <button id="btn-releve" type="button"
+            class="flex items-center justify-center gap-2 px-5 py-2.5 rounded-full text-sm font-medium text-white transition hover:opacity-90
+                       bg-gradient-to-r from-amber-400 to-yellow-500 dark:from-[#1ecb8b] dark:to-[#149766] dark:text-[#0d1117]">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M3.75 3v11.25A2.25 2.25 0 0 0 6 16.5h2.25M3.75 3h-1.5m1.5 0h16.5m0 0h1.5m-1.5 0v11.25A2.25 2.25 0 0 1 18 16.5h-2.25m-7.5 0h7.5m-7.5 0-1 3m8.5-3 1 3m0 0 .5 1.5m-.5-1.5h-9.5m0 0-.5 1.5" />
+            </svg>
+            Voir le relevé
+        </button>
+    </div>
+
+    <!-- RECENT ACTIVITIES : ventes réelles -->
+    <div class="rounded-2xl p-6 border transition-colors
+                bg-white/70 border-amber-200/60 backdrop-blur-xl
+                dark:bg-[#161b24] dark:border-white/5">
+        <div class="flex items-center justify-between mb-5 gap-3 flex-wrap">
+            <p class="text-sm font-semibold text-neutral-800 dark:text-white">Recent Activities</p>
+            <div class="flex items-center gap-2">
+                <div class="flex items-center gap-2 px-3 py-1.5 rounded-full text-xs border
+                            border-amber-200 text-neutral-500 dark:border-white/10 dark:text-gray-400">
+                    <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+                    </svg>
+                    Search
+                </div>
+                <div class="flex items-center gap-1 px-3 py-1.5 rounded-full text-xs border
+                            border-amber-200 text-neutral-500 dark:border-white/10 dark:text-gray-400">
+                    Filter
+                    <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M12 3v17.25m0 0-3.75-3.75M12 20.25l3.75-3.75M20.25 3H3.75" />
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+                <thead>
+                    <tr class="text-xs text-neutral-400 dark:text-gray-500">
+                        <th class="text-left font-medium pb-3">Référence</th>
+                        <th class="text-left font-medium pb-3">Activity</th>
+                        <th class="text-left font-medium pb-3">Price</th>
+                        <th class="text-left font-medium pb-3">Status</th>
+                        <th class="text-left font-medium pb-3">Date</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-amber-100 dark:divide-white/5">
+                    {% for a in activites_recentes %}
+                    <tr>
+                        <td class="py-3 text-neutral-700 dark:text-gray-300">{{ a.reference }}</td>
+                        <td class="py-3 text-neutral-700 dark:text-gray-300">{{ a.activity }}</td>
+                        <td class="py-3 text-neutral-700 dark:text-gray-300">{{ a.price|floatformat:0 }} FCFA</td>
+                        <td class="py-3"><span class="inline-flex items-center gap-1 text-emerald-500 text-xs"><span
+                                    class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>Complétée</span></td>
+                        <td class="py-3 text-neutral-400 dark:text-gray-500">{{ a.date }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" class="py-6 text-center text-neutral-400 dark:text-gray-500">Aucune vente
+                            enregistrée pour le moment.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- ================= MODAL RELEVE (loader -> tableau) ================= -->
+    <div id="releve-modal" class="releve-modal-overlay hidden">
+        <div class="releve-modal-panel fade-in">
+            <div class="releve-modal-header">
+                <p class="text-sm font-semibold text-neutral-800 dark:text-white">Relevé — mouvements financiers</p>
+                <button type="button" id="releve-modal-close" class="releve-modal-close">&times;</button>
+            </div>
+            <div class="releve-modal-body">
+
+                <!-- LOADER -->
+                <div id="releve-loader"
+                    class="absolute inset-0 flex flex-col items-center justify-center gap-4 bg-inherit">
+                    <div class="relative w-28 h-28 flex items-center justify-center">
+                        <div class="orbit absolute inset-0">
+                            <span class="orbit-star" style="top: 0; left: 50%; margin-left: -5px;"></span>
+                            <span class="orbit-star" style="bottom: 8px; left: 8px;"></span>
+                            <span class="orbit-star" style="bottom: 8px; right: 8px;"></span>
+                        </div>
+                        <svg class="w-20 h-20 -rotate-90" viewBox="0 0 100 100">
+                            <circle cx="50" cy="50" r="42" fill="none" stroke-width="8"
+                                class="stroke-amber-100 dark:stroke-white/5"></circle>
+                            <circle id="releve-loader-circle" cx="50" cy="50" r="42" fill="none" stroke-width="8"
+                                stroke-linecap="round" class="stroke-amber-500 dark:stroke-[#1ecb8b]"
+                                stroke-dasharray="263.9" stroke-dashoffset="263.9"></circle>
+                        </svg>
+                        <span id="releve-loader-percent"
+                            class="absolute text-base font-semibold text-neutral-800 dark:text-white">0%</span>
+                    </div>
+                    <p class="text-sm text-neutral-500 dark:text-gray-400">Préparation du relevé...</p>
+                </div>
+
+                <!-- TABLEAU -->
+                <div id="releve-table-wrap" class="hidden fade-in">
+                    <table class="w-full text-sm">
+                        <thead>
+                            <tr class="text-xs text-neutral-400 dark:text-gray-500">
+                                <th class="text-left font-medium pb-3">Date</th>
+                                <th class="text-left font-medium pb-3">Libellé</th>
+                                <th class="text-left font-medium pb-3">Type</th>
+                                <th class="text-left font-medium pb-3">Montant</th>
+                                <th class="text-left font-medium pb-3">Solde</th>
+                            </tr>
+                        </thead>
+                        <tbody id="releve-tbody" class="divide-y divide-amber-100 dark:divide-white/5"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</main>
 {% endblock %}
 
 {% block scripts %}
-
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+<script id="chart-mensuel-data" type="application/json">{{ chart_mensuel_json|safe }}</script>
+<script id="chart-mensuel-data" type="application/json">{{ achats_mois|safe }}</script>
+<script id="top10-stock-data" type="application/json">{{ top10_valorisation_json|safe }}</script>
+<script id="releve-data" type="application/json">{{ releve_json|safe }}</script>
 <script src="{% static 'js/dashboard.js' %}"></script>
-
 {% endblock %}

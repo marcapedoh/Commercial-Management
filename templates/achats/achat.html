@@ -1,0 +1,246 @@
+{% extends "base.html" %}
+{% load static %}
+{% block styles %}
+<link rel="stylesheet" href="{% static 'css/achat.css' %}">
+{% endblock %}
+{% block content %}
+<main class="px-6 sm:px-8 py-6 space-y-6">
+
+    <div>
+        <h1 class="text-2xl font-semibold text-neutral-800 dark:text-white">Achats</h1>
+        <p class="text-sm text-neutral-500 dark:text-gray-400">Enregistrez vos achats fournisseurs et suivez l'évolution du stock.</p>
+    </div>
+
+    <!-- STATS RAPIDES -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="rounded-2xl p-5 border bg-white/70 border-amber-200/60 backdrop-blur-xl
+                    dark:bg-[#161b24] dark:border-white/5">
+            <p class="text-xs text-neutral-500 dark:text-gray-400 mb-2">Achats enregistrés</p>
+            <p id="stat-total" class="text-2xl font-semibold text-neutral-800 dark:text-white">--</p>
+        </div>
+        <div class="rounded-2xl p-5 text-white bg-gradient-to-br from-amber-400 to-orange-500 dark:from-[#1ecb8b] dark:to-[#0f6e4f]">
+            <p class="text-xs opacity-90 mb-2">Montant total achats</p>
+            <p id="stat-montant" class="text-2xl font-semibold">--</p>
+            <p class="text-xs opacity-90 mt-1">FCFA</p>
+        </div>
+        <div class="rounded-2xl p-5 border bg-white/70 border-amber-200/60 backdrop-blur-xl
+                    dark:bg-[#161b24] dark:border-white/5">
+            <p class="text-xs text-neutral-500 dark:text-gray-400 mb-2">Achats ce mois</p>
+            <p id="stat-mois" class="text-2xl font-semibold text-neutral-800 dark:text-white">--</p>
+        </div>
+        <div class="rounded-2xl p-5 border bg-white/70 border-amber-200/60 backdrop-blur-xl
+                    dark:bg-[#161b24] dark:border-white/5">
+            <p class="text-xs text-neutral-500 dark:text-gray-400 mb-2">Fournisseur le plus sollicité</p>
+            <p id="stat-fournisseur" class="text-lg font-semibold text-amber-600 dark:text-[#f2c94c] truncate">--</p>
+        </div>
+    </div>
+
+    <!-- CONTENEUR PRINCIPAL : VUE LISTE / LOADER / FORMULAIRE -->
+    <div class="rounded-2xl p-6 border transition-colors relative overflow-hidden min-h-[520px]
+                bg-white/70 border-amber-200/60 backdrop-blur-xl
+                dark:bg-[#161b24] dark:border-white/5">
+
+        <!-- VUE LISTE -->
+        <div id="view-list" class="fade-in">
+
+            <div class="flex items-center justify-between mb-5 gap-3 flex-wrap">
+                <p class="text-sm font-semibold text-neutral-800 dark:text-white">Historique des achats</p>
+
+                <div class="flex items-center gap-2 flex-wrap">
+                    <div class="flex items-center gap-2 px-3 py-1.5 rounded-full text-xs border
+                                border-amber-200 text-neutral-500 dark:border-white/10 dark:text-gray-400">
+                        <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" /></svg>
+                        <input id="search-input" type="text" placeholder="Rechercher une référence, un fournisseur..."
+                               class="bg-transparent focus:outline-none placeholder-neutral-400 dark:placeholder-gray-500 w-40 sm:w-52">
+                    </div>
+
+                    <button id="btn-add-achat" type="button"
+                            class="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium text-white transition hover:opacity-90
+                                   bg-gradient-to-r from-amber-400 to-yellow-500 dark:from-[#1ecb8b] dark:to-[#149766] dark:text-[#0d1117]">
+                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>
+                        Enregistrer un achat
+                    </button>
+                </div>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="text-xs text-neutral-400 dark:text-gray-500">
+                            <th class="text-left font-medium pb-3">Référence</th>
+                            <th class="text-left font-medium pb-3">Fournisseur</th>
+                            <th class="text-left font-medium pb-3">Date</th>
+                            <th class="text-left font-medium pb-3">Lignes</th>
+                            <th class="text-left font-medium pb-3">Total</th>
+                            <th class="text-left font-medium pb-3">Enregistré par</th>
+                        </tr>
+                    </thead>
+                    <tbody id="achat-tbody" class="divide-y divide-amber-100 dark:divide-white/5"></tbody>
+                </table>
+            </div>
+
+            <p id="empty-state" class="hidden text-center text-sm text-neutral-400 dark:text-gray-500 py-10">
+                Aucun achat ne correspond à votre recherche.
+            </p>
+
+            <div class="flex items-center justify-between mt-8 gap-3 flex-wrap">
+                <p id="pagination-info" class="text-xs text-neutral-400 dark:text-gray-500"></p>
+                <div id="pagination" class="flex items-center gap-1.5 flex-wrap"></div>
+            </div>
+        </div>
+
+        <!-- VUE LOADER -->
+        <div id="view-loader" class="hidden absolute inset-0 flex flex-col items-center justify-center gap-4">
+            <div class="relative w-32 h-32 flex items-center justify-center">
+                <div class="orbit absolute inset-0">
+                    <span class="orbit-star" style="top: 0; left: 50%; margin-left: -5px;"></span>
+                    <span class="orbit-star" style="bottom: 8px; left: 8px;"></span>
+                    <span class="orbit-star" style="bottom: 8px; right: 8px;"></span>
+                </div>
+                <svg class="w-24 h-24 -rotate-90" viewBox="0 0 100 100">
+                    <circle cx="50" cy="50" r="42" fill="none" stroke-width="8"
+                            class="stroke-amber-100 dark:stroke-white/5"></circle>
+                    <circle id="loader-circle" cx="50" cy="50" r="42" fill="none" stroke-width="8"
+                            stroke-linecap="round"
+                            class="stroke-amber-500 dark:stroke-[#1ecb8b]"
+                            stroke-dasharray="263.9" stroke-dashoffset="263.9"></circle>
+                </svg>
+                <span id="loader-percent" class="absolute text-lg font-semibold text-neutral-800 dark:text-white">0%</span>
+            </div>
+            <p class="text-sm text-neutral-500 dark:text-gray-400">Préparation du formulaire...</p>
+        </div>
+
+        <!-- VUE FORMULAIRE -->
+        <div id="view-form" class="hidden fade-in">
+            <div class="flex items-center justify-between mb-5">
+                <p class="text-sm font-semibold text-neutral-800 dark:text-white">Enregistrer un nouvel achat</p>
+                <button id="btn-cancel-achat" type="button" class="text-xs font-medium text-neutral-400 hover:text-neutral-700 dark:text-gray-500 dark:hover:text-gray-300">
+                    Annuler
+                </button>
+            </div>
+
+            <form method="post" id="achat-form" action="{% url 'achats:ajouter_achat' %}" class="space-y-6">
+                {% csrf_token %}
+
+                <!-- INFOS GENERALES -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs text-neutral-500 dark:text-gray-400 mb-1.5">{{ form.fournisseur.label }}</label>
+                        {{ form.fournisseur }}
+                        {% if form.fournisseur.errors %}<p class="text-xs text-rose-500 mt-1">{{ form.fournisseur.errors.0 }}</p>{% endif %}
+                    </div>
+                    <div>
+                        <label class="block text-xs text-neutral-500 dark:text-gray-400 mb-1.5">Référence</label>
+                        <input type="text" id="reference-display" readonly value="Générée automatiquement"
+                               class="w-full rounded-lg px-3 py-2.5 text-sm cursor-not-allowed
+                                      bg-amber-50/60 border border-amber-200 text-neutral-400
+                                      dark:bg-white/[0.03] dark:border-white/10 dark:text-gray-500">
+                    </div>
+                </div>
+
+                <!-- AJOUT DE LIGNE PRODUIT -->
+                <div class="rounded-2xl p-4 border bg-amber-50/40 border-amber-200/60
+                            dark:bg-white/[0.02] dark:border-white/5">
+                    <p class="text-xs font-semibold uppercase tracking-wide text-neutral-400 dark:text-gray-500 mb-3">
+                        Ajouter un produit à l'achat
+                    </p>
+                    <div class="grid grid-cols-1 sm:grid-cols-[2fr_1fr_1fr_auto] gap-3 items-end">
+                        <div>
+                            <label class="block text-xs text-neutral-500 dark:text-gray-400 mb-1.5">Produit</label>
+                            <select id="line-produit"
+                                class="w-full rounded-lg px-3 py-2.5 text-sm transition focus:outline-none
+                                       bg-white/60 border border-amber-200 text-neutral-700 focus:border-amber-400
+                                       dark:bg-[#1a1d23] dark:border-gray-700 dark:text-gray-300 dark:focus:border-[#1ecb8b]">
+                                <option value="">Sélectionner un produit</option>
+                                {% for produit in produits %}
+                                <option value="{{ produit.id }}" data-prix="{{ produit.prix_achat }}" data-nom="{{ produit.designation }}">
+                                    {{ produit.designation }} — {{ produit.reference }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs text-neutral-500 dark:text-gray-400 mb-1.5">Quantité</label>
+                            <input id="line-quantite" type="number" min="1" value="1"
+                                class="w-full rounded-lg px-3 py-2.5 text-sm transition focus:outline-none
+                                       bg-white/60 border border-amber-200 text-neutral-700 focus:border-amber-400
+                                       dark:bg-[#1a1d23] dark:border-gray-700 dark:text-gray-300 dark:focus:border-[#1ecb8b]">
+                        </div>
+                        <div>
+                            <label class="block text-xs text-neutral-500 dark:text-gray-400 mb-1.5">Prix unitaire</label>
+                            <input id="line-prix" type="number" min="0" step="0.01"
+                                class="w-full rounded-lg px-3 py-2.5 text-sm transition focus:outline-none
+                                       bg-white/60 border border-amber-200 text-neutral-700 focus:border-amber-400
+                                       dark:bg-[#1a1d23] dark:border-gray-700 dark:text-gray-300 dark:focus:border-[#1ecb8b]">
+                        </div>
+                        <button type="button" id="btn-add-line"
+                            class="flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-lg text-sm font-medium text-white transition hover:opacity-90
+                                   bg-gradient-to-r from-amber-400 to-yellow-500 dark:from-[#1ecb8b] dark:to-[#149766] dark:text-[#0d1117]">
+                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>
+                            Ajouter
+                        </button>
+                    </div>
+                    <p id="line-info" class="hidden text-xs text-amber-600 dark:text-[#f2c94c] mt-2"></p>
+                </div>
+
+                <!-- TABLEAU DES LIGNES -->
+                <div>
+                    <p class="text-xs font-semibold uppercase tracking-wide text-neutral-400 dark:text-gray-500 mb-3">
+                        Produits de cet achat
+                    </p>
+                    <div class="overflow-x-auto rounded-xl border border-amber-200/60 dark:border-white/5">
+                        <table class="w-full text-sm">
+                            <thead>
+                                <tr class="text-xs text-neutral-400 dark:text-gray-500 bg-amber-50/50 dark:bg-white/[0.02]">
+                                    <th class="text-left font-medium py-2.5 px-3">Produit</th>
+                                    <th class="text-left font-medium py-2.5 px-3">Quantité</th>
+                                    <th class="text-left font-medium py-2.5 px-3">Prix unitaire</th>
+                                    <th class="text-left font-medium py-2.5 px-3">Total ligne</th>
+                                    <th class="text-left font-medium py-2.5 px-3"></th>
+                                </tr>
+                            </thead>
+                            <tbody id="lignes-tbody" class="divide-y divide-amber-100 dark:divide-white/5"></tbody>
+                        </table>
+                    </div>
+                    <p id="lignes-empty" class="text-xs text-neutral-400 dark:text-gray-500 text-center py-6">
+                        Aucun produit ajouté pour l'instant.
+                    </p>
+                </div>
+
+                <!-- TOTAL GENERAL -->
+                <div class="flex items-center justify-end gap-3 pt-2 border-t border-amber-200/50 dark:border-white/5">
+                    <span class="text-sm text-neutral-500 dark:text-gray-400">Total de l'achat</span>
+                    <span id="total-general" class="text-xl font-semibold text-neutral-800 dark:text-white">0 FCFA</span>
+                </div>
+
+                <input type="hidden" name="lignes_json" id="lignes-json">
+
+                {% if form.non_field_errors %}
+                <div class="text-sm text-rose-500">{{ form.non_field_errors }}</div>
+                {% endif %}
+                <p id="form-error" class="hidden text-sm text-rose-500"></p>
+
+                <div class="flex justify-end gap-3 pt-2">
+                    <button type="button" id="btn-cancel-achat-inline"
+                            class="px-5 py-2.5 rounded-full text-sm font-medium border transition
+                                   border-amber-200 text-neutral-600 hover:bg-amber-50
+                                   dark:border-white/10 dark:text-gray-300 dark:hover:bg-white/5">
+                        Annuler
+                    </button>
+                    <button type="submit"
+                            class="px-6 py-2.5 rounded-full text-sm font-semibold text-white transition hover:opacity-90
+                                   bg-gradient-to-r from-amber-400 to-yellow-500 dark:from-[#1ecb8b] dark:to-[#149766] dark:text-[#0d1117]">
+                        Enregistrer l'achat
+                    </button>
+                </div>
+            </form>
+        </div>
+
+    </div>
+</main>
+{% endblock %}
+
+{% block scripts %}
+{{ achats_json|json_script:"achats-data" }}
+<script src="{% static 'js/achat.js' %}"></script>
+{% endblock %}

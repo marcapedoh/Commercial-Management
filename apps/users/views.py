@@ -10,7 +10,7 @@ def login_view(request):
 
     if request.user.is_authenticated:
         return render(request, "users/login.html", {
-            "redirect_url": reverse("users:dashboard")
+            "redirect_url": reverse("dashboards:dashboard")
         })
 
     if request.method == "POST":
@@ -31,7 +31,7 @@ def login_view(request):
                 request,
                 "users/login.html",
                 {
-                    "redirect_url": reverse("users:dashboard")
+                    "redirect_url": reverse("dashboards:dashboard")
                 }
             )
 

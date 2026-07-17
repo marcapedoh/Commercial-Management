@@ -17,7 +17,9 @@ class Client(models.Model):
 
 
     email=models.EmailField(
-        blank=True
+        blank=True,
+        unique=True,
+        null=True
     )
 
 
@@ -29,3 +31,6 @@ class Client(models.Model):
     created_at=models.DateTimeField(
         auto_now_add=True
     )
+
+    def __str__(self):
+        return self.nom

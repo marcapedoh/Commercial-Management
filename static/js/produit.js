@@ -11,8 +11,8 @@ document.addEventListener('DOMContentLoaded', () => {
     let PRODUCTS_ = JSON.parse(
         document.getElementById('produits-data').textContent
     );
-    const PRODUCTS=JSON.parse(PRODUCTS_)
-   
+    const PRODUCTS = JSON.parse(PRODUCTS_)
+
     const PER_PAGE = 8;
 
     let currentPage = 1;
@@ -198,19 +198,19 @@ document.addEventListener('DOMContentLoaded', () => {
     /* =========================================================
        TOGGLE AFFICHAGE DES IMAGES
     ========================================================= */
-    if(btnToggleImages){
+    if (btnToggleImages) {
         btnToggleImages.addEventListener('click', () => {
             showImages = !showImages;
             iconEyeOn.classList.toggle('hidden', showImages);
             iconEyeOff.classList.toggle('hidden', !showImages);
-            toggleLabel.textContent = showImages 
-                ? 'Masquer les images' 
+            toggleLabel.textContent = showImages
+                ? 'Masquer les images'
                 : 'Afficher les images';
 
             renderCatalog();
         });
     }
-    
+
 
     /* =========================================================
        RECHERCHE
@@ -280,7 +280,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (categorieForm) {
 
-        categorieForm.addEventListener('submit', async (e)=>{
+        categorieForm.addEventListener('submit', async (e) => {
 
             e.preventDefault();
 
@@ -301,13 +301,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 const response = await fetch(
                     categorieForm.action,
                     {
-                        method:"POST",
-                        body:formData,
-                        headers:{
+                        method: "POST",
+                        body: formData,
+                        headers: {
                             "X-CSRFToken":
-                            document.querySelector(
-                                '[name=csrfmiddlewaretoken]'
-                            ).value
+                                document.querySelector(
+                                    '[name=csrfmiddlewaretoken]'
+                                ).value
                         }
                     }
                 );
@@ -317,7 +317,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 
-                if(data.success){
+                if (data.success) {
 
 
                     // ajouter automatiquement dans le select produit
@@ -327,15 +327,15 @@ document.addEventListener('DOMContentLoaded', () => {
                     );
 
 
-                    if(select){
+                    if (select) {
 
                         const option =
-                        document.createElement("option");
+                            document.createElement("option");
 
 
-                        option.value=data.id;
-                        option.textContent=data.nom;
-                        option.selected=true;
+                        option.value = data.id;
+                        option.textContent = data.nom;
+                        option.selected = true;
 
 
                         select.appendChild(option);
@@ -348,7 +348,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                     document.getElementById(
                         "categorie-success-name"
-                    ).textContent=data.nom;
+                    ).textContent = data.nom;
 
 
 
@@ -371,11 +371,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 
-                }else{
+                } else {
 
 
                     categorieError.textContent =
-                    "Erreur lors de l'ajout";
+                        "Erreur lors de l'ajout";
 
 
                     categorieError.classList.remove("hidden");
@@ -384,11 +384,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 
-            }catch(error){
+            } catch (error) {
 
 
                 categorieError.textContent =
-                "Une erreur est survenue";
+                    "Une erreur est survenue";
 
 
                 categorieError.classList.remove("hidden");
@@ -397,10 +397,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 
-            finally{
+            finally {
 
 
-                btnSubmitCategorie.disabled=false;
+                btnSubmitCategorie.disabled = false;
 
                 btnSubmitCategorie.classList.remove(
                     "opacity-60"
@@ -415,11 +415,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     }
-    if(btnNewCategory){
+    if (btnNewCategory) {
 
         btnNewCategory.addEventListener(
             "click",
-            ()=>{
+            () => {
                 categorieSuccess.classList.add(
                     "hidden"
                 );
@@ -442,7 +442,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
             }
-            );
+        );
 
     }
 
@@ -451,4 +451,11 @@ document.addEventListener('DOMContentLoaded', () => {
             btnCancelProduit.click();
         });
     }
+});
+
+toggleBtn.addEventListener('click', () => {
+    root.classList.toggle('dark');
+    localStorage.setItem('razor-theme', root.classList.contains('dark') ? 'dark' : 'light');
+    chartInstance.destroy();
+    chartInstance = renderChart();
 });

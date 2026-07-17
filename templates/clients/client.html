@@ -1,0 +1,232 @@
+{% extends "base.html" %}
+{% load static %}
+{% block styles %}
+<link rel="stylesheet" href="{% static 'css/client.css' %}">
+{% endblock %}
+{% block content %}
+<main class="px-6 sm:px-8 py-6 space-y-6">
+
+    <div>
+        <h1 class="text-2xl font-semibold text-neutral-800 dark:text-white">Clients</h1>
+        <p class="text-sm text-neutral-500 dark:text-gray-400">Suivez vos clients et analysez leur rentabilité.</p>
+    </div>
+
+    <!-- STATS RAPIDES -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="rounded-2xl p-5 border bg-white/70 border-amber-200/60 backdrop-blur-xl
+                    dark:bg-[#161b24] dark:border-white/5">
+            <p class="text-xs text-neutral-500 dark:text-gray-400 mb-2">Clients enregistrés</p>
+            <p id="stat-total" class="text-2xl font-semibold text-neutral-800 dark:text-white">--</p>
+        </div>
+        <div class="rounded-2xl p-5 text-white bg-gradient-to-br from-amber-400 to-orange-500 dark:from-[#1ecb8b] dark:to-[#0f6e4f]">
+            <p class="text-xs opacity-90 mb-2">Chiffre d'affaires total</p>
+            <p id="stat-ca" class="text-2xl font-semibold">--</p>
+            <p class="text-xs opacity-90 mt-1">FCFA</p>
+        </div>
+        <div class="rounded-2xl p-5 border bg-white/70 border-amber-200/60 backdrop-blur-xl
+                    dark:bg-[#161b24] dark:border-white/5">
+            <p class="text-xs text-neutral-500 dark:text-gray-400 mb-2">Panier moyen global</p>
+            <p id="stat-panier" class="text-2xl font-semibold text-neutral-800 dark:text-white">--</p>
+            <p class="text-xs text-neutral-400 dark:text-gray-500 mt-1">FCFA</p>
+        </div>
+        <div class="rounded-2xl p-5 border bg-white/70 border-amber-200/60 backdrop-blur-xl
+                    dark:bg-[#161b24] dark:border-white/5">
+            <p class="text-xs text-neutral-500 dark:text-gray-400 mb-2">Clients à relancer</p>
+            <p id="stat-relance" class="text-2xl font-semibold text-rose-500">--</p>
+            <p class="text-xs text-neutral-400 dark:text-gray-500 mt-1">Inactifs depuis 30+ jours</p>
+        </div>
+    </div>
+
+    <!-- ANALYSE : TOP 10 / A RELANCER -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+        <!-- TOP 10 MEILLEURS CLIENTS -->
+        <div class="rounded-2xl p-6 border transition-colors
+                    bg-white/70 border-amber-200/60 backdrop-blur-xl
+                    dark:bg-[#161b24] dark:border-white/5">
+            <div class="flex items-center justify-between mb-4">
+                <p class="text-sm font-semibold text-neutral-800 dark:text-white">Top 10 meilleurs clients</p>
+                <span class="text-xs px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400">Par bénéfice</span>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="text-xs text-neutral-400 dark:text-gray-500">
+                            <th class="text-left font-medium pb-2">Client</th>
+                            <th class="text-left font-medium pb-2">CA</th>
+                            <th class="text-left font-medium pb-2">Bénéfice</th>
+                            <th class="text-left font-medium pb-2">Cmd.</th>
+                            <th class="text-left font-medium pb-2">Panier moyen</th>
+                        </tr>
+                    </thead>
+                    <tbody id="top-clients-tbody" class="divide-y divide-amber-100 dark:divide-white/5"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- CLIENTS A RELANCER -->
+        <div class="rounded-2xl p-6 border transition-colors
+                    bg-white/70 border-amber-200/60 backdrop-blur-xl
+                    dark:bg-[#161b24] dark:border-white/5">
+            <div class="flex items-center justify-between mb-4">
+                <p class="text-sm font-semibold text-neutral-800 dark:text-white">Clients à relancer</p>
+                <span class="text-xs px-2 py-0.5 rounded-full bg-rose-50 text-rose-600 dark:bg-rose-500/10 dark:text-rose-400">Inactivité 30+ j</span>
+            </div>
+            <div id="relance-list" class="space-y-3"></div>
+            <p id="relance-empty" class="hidden text-sm text-neutral-400 dark:text-gray-500 py-6 text-center">
+                Aucun client à relancer pour le moment.
+            </p>
+        </div>
+    </div>
+
+    <!-- CONTENEUR PRINCIPAL : VUE LISTE / LOADER / FORMULAIRE -->
+    <div class="rounded-2xl p-6 border transition-colors relative overflow-hidden min-h-[480px]
+                bg-white/70 border-amber-200/60 backdrop-blur-xl
+                dark:bg-[#161b24] dark:border-white/5">
+
+        <!-- VUE LISTE -->
+        <div id="view-list" class="fade-in">
+
+            <div class="flex items-center justify-between mb-5 gap-3 flex-wrap">
+                <p class="text-sm font-semibold text-neutral-800 dark:text-white">Liste des clients</p>
+
+                <div class="flex items-center gap-2 flex-wrap">
+                    <div class="flex items-center gap-2 px-3 py-1.5 rounded-full text-xs border
+                                border-amber-200 text-neutral-500 dark:border-white/10 dark:text-gray-400">
+                        <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" /></svg>
+                        <input id="search-input" type="text" placeholder="Rechercher un client..."
+                               class="bg-transparent focus:outline-none placeholder-neutral-400 dark:placeholder-gray-500 w-32 sm:w-44">
+                    </div>
+
+                    <div class="flex items-center gap-1 px-3 py-1.5 rounded-full text-xs border
+                                border-amber-200 text-neutral-500 dark:border-white/10 dark:text-gray-400">
+                        Filter
+                        <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v17.25m0 0-3.75-3.75M12 20.25l3.75-3.75M20.25 3H3.75" /></svg>
+                    </div>
+
+                    <button id="btn-add-client" type="button"
+                            class="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium text-white transition hover:opacity-90
+                                   bg-gradient-to-r from-amber-400 to-yellow-500 dark:from-[#1ecb8b] dark:to-[#149766] dark:text-[#0d1117]">
+                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>
+                        Ajouter un client
+                    </button>
+                </div>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="text-xs text-neutral-400 dark:text-gray-500">
+                            <th class="text-left font-medium pb-3">Client</th>
+                            <th class="text-left font-medium pb-3">Téléphone</th>
+                            <th class="text-left font-medium pb-3">Email</th>
+                            <th class="text-left font-medium pb-3">CA généré</th>
+                            <th class="text-left font-medium pb-3">Commandes</th>
+                            <th class="text-left font-medium pb-3">Fréquence</th>
+                            <th class="text-left font-medium pb-3">Statut</th>
+                        </tr>
+                    </thead>
+                    <tbody id="client-tbody" class="divide-y divide-amber-100 dark:divide-white/5"></tbody>
+                </table>
+            </div>
+
+            <p id="empty-state" class="hidden text-center text-sm text-neutral-400 dark:text-gray-500 py-10">
+                Aucun client ne correspond à votre recherche.
+            </p>
+
+            <!-- PAGINATION -->
+            <div class="flex items-center justify-between mt-8 gap-3 flex-wrap">
+                <p id="pagination-info" class="text-xs text-neutral-400 dark:text-gray-500"></p>
+                <div id="pagination" class="flex items-center gap-1.5 flex-wrap"></div>
+            </div>
+        </div>
+
+        <!-- VUE LOADER -->
+        <div id="view-loader" class="hidden absolute inset-0 flex flex-col items-center justify-center gap-4">
+            <div class="relative w-32 h-32 flex items-center justify-center">
+                <div class="orbit absolute inset-0">
+                    <span class="orbit-star" style="top: 0; left: 50%; margin-left: -5px;"></span>
+                    <span class="orbit-star" style="bottom: 8px; left: 8px;"></span>
+                    <span class="orbit-star" style="bottom: 8px; right: 8px;"></span>
+                </div>
+                <svg class="w-24 h-24 -rotate-90" viewBox="0 0 100 100">
+                    <circle cx="50" cy="50" r="42" fill="none" stroke-width="8"
+                            class="stroke-amber-100 dark:stroke-white/5"></circle>
+                    <circle id="loader-circle" cx="50" cy="50" r="42" fill="none" stroke-width="8"
+                            stroke-linecap="round"
+                            class="stroke-amber-500 dark:stroke-[#1ecb8b]"
+                            stroke-dasharray="263.9" stroke-dashoffset="263.9"></circle>
+                </svg>
+                <span id="loader-percent" class="absolute text-lg font-semibold text-neutral-800 dark:text-white">0%</span>
+            </div>
+            <p class="text-sm text-neutral-500 dark:text-gray-400">Préparation du formulaire...</p>
+        </div>
+
+        <!-- VUE FORMULAIRE -->
+        <div id="view-form" class="hidden fade-in">
+            <div class="flex items-center justify-between mb-5">
+                <p class="text-sm font-semibold text-neutral-800 dark:text-white">Ajouter un nouveau client</p>
+                <button id="btn-cancel-client" type="button" class="text-xs font-medium text-neutral-400 hover:text-neutral-700 dark:text-gray-500 dark:hover:text-gray-300">
+                    Annuler
+                </button>
+            </div>
+
+            <form method="post" class="space-y-5" action="{% url 'clients:ajouter_client' %}">
+                {% csrf_token %}
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs text-neutral-500 dark:text-gray-400 mb-1.5">{{ form.nom.label }}</label>
+                        {{ form.nom }}
+                        {% if form.nom.errors %}<p class="text-xs text-rose-500 mt-1">{{ form.nom.errors.0 }}</p>{% endif %}
+                    </div>
+                    <div>
+                        <label class="block text-xs text-neutral-500 dark:text-gray-400 mb-1.5">{{ form.prenom.label }}</label>
+                        {{ form.prenom }}
+                    </div>
+
+                    <div>
+                        <label class="block text-xs text-neutral-500 dark:text-gray-400 mb-1.5">{{ form.telephone.label }}</label>
+                        {{ form.telephone }}
+                        {% if form.telephone.errors %}<p class="text-xs text-rose-500 mt-1">{{ form.telephone.errors.0 }}</p>{% endif %}
+                    </div>
+                    <div>
+                        <label class="block text-xs text-neutral-500 dark:text-gray-400 mb-1.5">{{ form.email.label }}</label>
+                        {{ form.email }}
+                        {% if form.email.errors %}<p class="text-xs text-rose-500 mt-1">{{ form.email.errors.0 }}</p>{% endif %}
+                    </div>
+
+                    <div class="sm:col-span-2">
+                        <label class="block text-xs text-neutral-500 dark:text-gray-400 mb-1.5">{{ form.adresse.label }}</label>
+                        {{ form.adresse }}
+                    </div>
+                </div>
+
+                {% if form.non_field_errors %}
+                <div class="text-sm text-rose-500">{{ form.non_field_errors }}</div>
+                {% endif %}
+
+                <div class="flex justify-end gap-3 pt-2">
+                    <button type="button" id="btn-cancel-client-inline"
+                            class="px-5 py-2.5 rounded-full text-sm font-medium border transition
+                                   border-amber-200 text-neutral-600 hover:bg-amber-50
+                                   dark:border-white/10 dark:text-gray-300 dark:hover:bg-white/5">
+                        Annuler
+                    </button>
+                    <button type="submit"
+                            class="px-6 py-2.5 rounded-full text-sm font-semibold text-white transition hover:opacity-90
+                                   bg-gradient-to-r from-amber-400 to-yellow-500 dark:from-[#1ecb8b] dark:to-[#149766] dark:text-[#0d1117]">
+                        Enregistrer le client
+                    </button>
+                </div>
+            </form>
+        </div>
+
+    </div>
+</main>
+{% endblock %}
+
+{% block scripts %}
+{{ clients_json|json_script:"clients-data" }}
+<script src="{% static 'js/client.js' %}"></script>
+{% endblock %}

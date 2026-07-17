@@ -1,0 +1,97 @@
+/* =========================================================
+   POLICE & BASE
+========================================================= */
+body {
+    font-family: 'Poppins', sans-serif;
+}
+
+/* =========================================================
+   ANIMATIONS : LOADER + ETOILES GRAVITANTES
+========================================================= */
+@keyframes spinOrbit {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+@keyframes fadeSlide {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.orbit {
+    animation: spinOrbit 3.5s linear infinite;
+}
+
+.orbit-star {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background: #f2c94c;
+    clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+}
+
+.dark .orbit-star {
+    background: #1ecb8b;
+}
+
+.fade-in {
+    animation: fadeSlide 0.4s ease both;
+}
+
+/* =========================================================
+   BOUTONS DE PAGINATION : ETAT ACTIF
+========================================================= */
+.page-btn.active {
+    background: linear-gradient(135deg, #fbbf24, #f59e0b);
+    color: #fff;
+    border-color: transparent;
+}
+
+.dark .page-btn.active {
+    background: linear-gradient(135deg, #1ecb8b, #149766);
+    color: #0d1117;
+}
+
+/* =========================================================
+   CHAMPS DE FORMULAIRE (reference: INPUT_CLASSES cote Django)
+   Ajouts complementaires non couverts par Tailwind inline
+========================================================= */
+#produit-info-form input,
+#produit-info-form select,
+#produit-info-form textarea,
+#categorie-form input,
+#categorie-form textarea {
+    width: 100%;
+}
+
+/* =========================================================
+   SCROLLBAR (coherent avec le reste du projet)
+========================================================= */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #d4d4d4;
+    border-radius: 10px;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+    background: #2a3038;
+}
+
+/* =========================================================
+   TABLEAU FOURNISSEURS : LEGERE TRANSITION AU HOVER DE LIGNE
+========================================================= */
+#fournisseur-tbody tr {
+    transition: background-color 0.15s ease;
+}
+
+#fournisseur-tbody tr:hover {
+    background-color: rgba(251, 191, 36, 0.06);
+}
+
+.dark #fournisseur-tbody tr:hover {
+    background-color: rgba(255, 255, 255, 0.03);
+}
